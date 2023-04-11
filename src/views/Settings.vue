@@ -2,5 +2,5 @@
   <div>{{ title }}</div>
 </template>
 <script setup lang="ts">
-const title = 'about page'
+const title = 'settings page'
 </script>

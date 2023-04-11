@@ -11,5 +11,5 @@ const counter = useCounterStore()
 const click = () => {
   counter.increment()
 }
-const title = 'home page'
+const title = 'dashboard page'
 </script>
