@@ -1,9 +1,11 @@
 <template>
   <div id="app">
     <AConfigProvider :locale="zhCN">
-      <AButton>Hello AnddUI</AButton>
-      <AInput></AInput>
-      <ADatePicker />
+      <RouterView></RouterView>
+      <ASpace>
+        <a href="#/about">about</a>
+        <a href="#">index</a>
+      </ASpace>
     </AConfigProvider>
   </div>
 </template>
