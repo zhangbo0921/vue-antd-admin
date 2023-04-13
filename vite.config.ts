@@ -1,4 +1,4 @@
-import { fileURLToPath, URL } from 'node:url'
+import { fileURLToPath, URL } from 'url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -26,5 +26,15 @@ export default defineConfig({
   },
   server: {
     host: true
+  },
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true
+      }
+    }
+  },
+  optimizeDeps: {
+    include: ['ant-design-vue']
   }
 })
