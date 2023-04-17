@@ -35,9 +35,10 @@ html ::-webkit-scrollbar-thumb {
     align-items: center;
     line-height: unset;
     height: @layout-header-height;
-    padding: 0 8px;
+    padding: 0;
     transition: all 0.2s;
     justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
     &.unvue-header-fixed {
       position: fixed;
@@ -47,27 +48,107 @@ html ::-webkit-scrollbar-thumb {
     &.unvue-header-fixed--sider {
       width: 100%;
     }
+    &.unvue-header-collapsed--sider {
+      width: calc(100% - @layout-sider-collapsed-width);
+    }
     &.unvue-header-light {
       background: #fff;
     }
     &.unvue-header-dark {
-      color: #fff;
+      h3,
+      .unvue-header-right,
+      .trigger-collapsed {
+        color: #fff;
+      }
     }
     &.unvue-layout-sider-dark {
       color: #fff;
+    }
+    .unvue-header-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: @layout-sider-width;
+      height: @layout-header-height;
+    }
+    .unvue-header-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: @layout-sider-width;
+      height: @layout-header-height;
+    }
+    .unvue-header-menu {
+      display: flex;
+      flex: 1;
+      height: @layout-header-height;
+      align-items: center;
+      .unvue-header-menu-container {
+        height: @layout-header-height;
+        line-height: @layout-header-height;
+        .ant-menu-horizontal {
+          border-bottom: none;
+        }
+        .ant-menu {
+          transition: background 0.2s, width 0.3s cubic-bezier(0.2, 0, 0, 1) 0s;
+        }
+      }
+    }
+
+    .trigger-collapsed {
+      margin-left: 8px;
+      cursor: pointer;
     }
   }
 
   // sider
   .unvue-sider {
     &.ant-layout-sider-dark {
-      color: #fff;
+      .logo {
+        h3 {
+          color: #fff;
+        }
+      }
+    }
+    &.ant-layout-sider-light {
+      .logo {
+        h3 {
+          color: @text-color;
+        }
+      }
+    }
+    .unvue-menu-container {
+      height: calc(100vh - @layout-header-height);
+      overflow: hidden auto;
     }
     &.unvue-sider-fixed {
       position: fixed;
       z-index: 11;
+      height: calc(100vh - @layout-header-height);
+      overflow: auto;
+    }
+    .ant-menu {
+      transition: background 0.2s;
     }
   }
+
+  // logo
+  .logo {
+    height: @layout-header-height;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: @layout-sider-width;
+    img {
+      height: 32px;
+    }
+    h3 {
+      padding: 0 0 0 8px;
+      margin: 0;
+    }
+  }
+
   // content
   .unvue-content {
     padding: 8px;
