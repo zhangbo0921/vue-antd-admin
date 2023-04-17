@@ -1,5 +1,22 @@
 @import 'ant-design-vue/dist/antd.less';
 @import '@/less/var.less';
+// sider children 浏览器滚动条样式hack
+html ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+html ::-webkit-scrollbar-track {
+  background: hsla(0, 0%, 100%, 0.15);
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgb(37 37 37 / 5%);
+}
+
+html ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgb(0 21 41 / 5%);
+}
 
 #app {
   width: 100%;
@@ -11,6 +28,8 @@
   flex-direction: column;
   width: 100%;
   min-height: 100%;
+
+  // header
   .unvue-header {
     display: flex;
     align-items: center;
@@ -18,16 +37,38 @@
     height: @layout-header-height;
     padding: 0 8px;
     transition: all 0.2s;
+    justify-content: space-between;
+
+    &.unvue-header-fixed {
+      position: fixed;
+      width: calc(100% - @layout-sider-width);
+      z-index: 11;
+    }
+    &.unvue-header-fixed--sider {
+      width: 100%;
+    }
+    &.unvue-header-light {
+      background: #fff;
+    }
+    &.unvue-header-dark {
+      color: #fff;
+    }
+    &.unvue-layout-sider-dark {
+      color: #fff;
+    }
   }
-  .unvue-header-light {
-    background: #fff;
+
+  // sider
+  .unvue-sider {
+    &.ant-layout-sider-dark {
+      color: #fff;
+    }
+    &.unvue-sider-fixed {
+      position: fixed;
+      z-index: 11;
+    }
   }
-  .unvue-header-dark {
-    color: #fff;
-  }
-  .unvue-layout-sider-dark {
-    color: #fff;
-  }
+  // content
   .unvue-content {
     padding: 8px;
   }
