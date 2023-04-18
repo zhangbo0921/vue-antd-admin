@@ -186,7 +186,7 @@
           <br />
           <template v-if="!isTop">
             Fixed Sider
-            <a-radio-group v-model:value="isFixedSider">
+            <a-radio-group v-model:value="isFixedSider" :disabled="!isEnableFixedSider">
               <a-radio-button :value="true">true</a-radio-button>
               <a-radio-button :value="false">false</a-radio-button>
             </a-radio-group>
@@ -221,7 +221,7 @@
   </a-layout>
 </template>
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import {
   DashboardOutlined,
   MenuFoldOutlined,
@@ -260,6 +260,29 @@ const isHeaderLight = computed(() => {
 const siderTheme = ref('dark')
 const isSiderDark = computed(() => {
   return siderTheme.value === 'dark'
+})
+
+const isEnableFixedSider = ref(true)
+
+watchEffect(() => {
+  if (isSider.value) {
+    if (isFixedHeader.value) {
+      isFixedHeader.value = true
+      isFixedSider.value = true
+      isEnableFixedSider.value = false
+    } else {
+      isEnableFixedSider.value = true
+    }
+  }
+  if (isMix.value) {
+    if (isFixedHeader.value) {
+      isFixedHeader.value = true
+      isFixedSider.value = true
+      isEnableFixedSider.value = false
+    } else {
+      isFixedSider.value = false
+    }
+  }
 })
 </script>
 <style lang="less">
