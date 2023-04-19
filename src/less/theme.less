@@ -77,6 +77,18 @@ html ::-webkit-scrollbar-thumb {
       justify-content: flex-end;
       min-width: @layout-sider-width;
       height: @layout-header-height;
+      .header-item-container {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 8px;
+        .header-item {
+          cursor: pointer;
+          a {
+            color: unset;
+          }
+        }
+      }
     }
     .unvue-header-menu {
       display: flex;
@@ -96,6 +108,7 @@ html ::-webkit-scrollbar-thumb {
     }
 
     .trigger-collapsed {
+      display: flex;
       margin-left: 8px;
       cursor: pointer;
     }
@@ -152,5 +165,20 @@ html ::-webkit-scrollbar-thumb {
   // content
   .unvue-content {
     padding: 8px;
+  }
+
+  .setting-container {
+    position: fixed;
+    top: 45%;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    padding: 10px;
+    color: #fff;
+    cursor: pointer;
+    background-color: #0960bd;
+    border-radius: 6px 0 0 6px;
+    justify-content: center;
+    align-items: center;
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <a-layout class="unvue-layout">
     <a-layout-header
-      v-if="isTop || isMix"
+      v-if="(isTop || isMix) && !isContentFullscreen"
       class="unvue-header"
       :class="{
         'unvue-header-light': isHeaderLight,
@@ -21,8 +21,8 @@
           class="trigger-collapsed"
           @click="() => (isSiderCollapsed = !isSiderCollapsed)"
         >
-          <menu-fold-outlined v-if="!isSiderCollapsed" style="font-size: 20px" />
-          <menu-unfold-outlined v-else style="font-size: 20px" />
+          <menu-fold-outlined v-if="!isSiderCollapsed" style="font-size: 18px" />
+          <menu-unfold-outlined v-else style="font-size: 18px" />
         </div>
         <div v-if="isTop" class="unvue-header-menu-container">
           <a-menu mode="horizontal" :theme="headerTheme">
@@ -48,16 +48,72 @@
           </a-menu>
         </div>
       </div>
-      <div class="unvue-header-right">Header Right</div>
+      <div class="unvue-header-right">
+        <div class="header-item-container">
+          <a-space size="middle">
+            <div class="header-item">
+              <a-badge :dot="true">
+                <a-tooltip placement="bottom">
+                  <template #title>消息</template>
+                  <bulb-outlined style="font-size: 20px" />
+                </a-tooltip>
+              </a-badge>
+            </div>
+            <div class="header-item">
+              <a href="https://github.com/zhangbo0921/vue-antd-admin" target="_blank">
+                <a-tooltip placement="bottom">
+                  <template #title>仓库</template>
+                  <github-outlined style="font-size: 20px" />
+                </a-tooltip>
+              </a>
+            </div>
+            <div class="header-item" @click="toggle">
+              <a-tooltip placement="bottom">
+                <fullscreen-outlined v-if="!isBrowserFullscreen" style="font-size: 20px" />
+                <fullscreen-exit-outlined v-else style="font-size: 20px" />
+              </a-tooltip>
+            </div>
+            <div class="header-item">
+              <a-dropdown trigger="click">
+                <a-avatar>
+                  {{ userName }}
+                </a-avatar>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <template #icon>
+                        <user-outlined />
+                      </template>
+                      <a href="javascript:;">我的信息</a>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <template #icon>
+                        <user-switch-outlined />
+                      </template>
+                      <a href="javascript:;">切换角色</a>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <template #icon>
+                        <poweroff-outlined />
+                      </template>
+                      <a href="javascript:;">安全退出</a>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </div>
+          </a-space>
+        </div>
+      </div>
     </a-layout-header>
     <a-layout-header
-      v-if="(isTop || isMix) && isFixedHeader"
+      v-if="(isTop || isMix) && isFixedHeader && !isContentFullscreen"
       class="unvue-header"
       :class="{ 'unvue-header-light': isHeaderLight, 'unvue-header-dark': !isHeaderLight }"
     >
     </a-layout-header>
     <a-layout-sider
-      v-if="isSider"
+      v-if="isSider && !isContentFullscreen"
       v-model:collapsed="isSiderCollapsed"
       collapsible
       :trigger="null"
@@ -96,7 +152,7 @@
       </div>
     </a-layout-sider>
     <a-layout-sider
-      v-if="isSider && isFixedSider"
+      v-if="isSider && isFixedSider && !isContentFullscreen"
       class="unvue-sider"
       :theme="siderTheme"
       v-model:collapsed="isSiderCollapsed"
@@ -106,7 +162,7 @@
     ></a-layout-sider>
     <a-layout>
       <a-layout-sider
-        v-if="isMix"
+        v-if="isMix && !isContentFullscreen"
         v-model:collapsed="isSiderCollapsed"
         collapsible
         :trigger="null"
@@ -138,7 +194,7 @@
         </a-menu>
       </a-layout-sider>
       <a-layout-sider
-        v-if="isMix && isFixedSider"
+        v-if="isMix && isFixedSider && !isContentFullscreen"
         class="unvue-sider"
         v-model:collapsed="isSiderCollapsed"
         collapsible
@@ -148,7 +204,7 @@
       ></a-layout-sider>
       <a-layout-content>
         <a-layout-header
-          v-if="isSider"
+          v-if="isSider && !isContentFullscreen"
           class="unvue-header"
           :class="{
             'unvue-header-light': isHeaderLight,
@@ -163,74 +219,164 @@
               <menu-unfold-outlined v-else style="font-size: 20px" />
             </div>
           </div>
-          <div class="unvue-header-right">Header Right</div>
+          <div class="unvue-header-right">
+            <div class="header-item-container">
+              <a-space size="middle">
+                <div class="header-item">
+                  <a-badge :dot="true">
+                    <a-tooltip placement="bottom">
+                      <template #title>消息</template>
+                      <bulb-outlined style="font-size: 20px" />
+                    </a-tooltip>
+                  </a-badge>
+                </div>
+                <div class="header-item">
+                  <a href="https://github.com/zhangbo0921/vue-antd-admin" target="_blank">
+                    <a-tooltip placement="bottom">
+                      <template #title>仓库</template>
+                      <github-outlined style="font-size: 20px" />
+                    </a-tooltip>
+                  </a>
+                </div>
+                <div class="header-item" @click="toggle">
+                  <a-tooltip placement="bottom">
+                    <fullscreen-outlined v-if="!isBrowserFullscreen" style="font-size: 20px" />
+                    <fullscreen-exit-outlined v-else style="font-size: 20px" />
+                  </a-tooltip>
+                </div>
+                <div class="header-item">
+                  <a-dropdown trigger="click">
+                    <a-avatar>
+                      {{ userName }}
+                    </a-avatar>
+                    <template #overlay>
+                      <a-menu>
+                        <a-menu-item>
+                          <template #icon>
+                            <user-outlined />
+                          </template>
+                          <a href="javascript:;">我的信息</a>
+                        </a-menu-item>
+                        <a-menu-item>
+                          <template #icon>
+                            <user-switch-outlined />
+                          </template>
+                          <a href="javascript:;">切换角色</a>
+                        </a-menu-item>
+                        <a-menu-item>
+                          <template #icon>
+                            <poweroff-outlined />
+                          </template>
+                          <a href="javascript:;">安全退出</a>
+                        </a-menu-item>
+                      </a-menu>
+                    </template>
+                  </a-dropdown>
+                </div>
+              </a-space>
+            </div>
+          </div>
         </a-layout-header>
         <a-layout-header
-          v-if="isSider && isFixedHeader"
+          v-if="isSider && isFixedHeader && !isContentFullscreen"
           :class="{ 'unvue-header-light': isHeaderLight, 'unvue-header-dark': !isHeaderLight }"
         >
         </a-layout-header>
         <div class="unvue-content">
-          Layout：
-          <a-radio-group v-model:value="layout">
-            <a-radio-button value="top">top</a-radio-button>
-            <a-radio-button value="mix">mix</a-radio-button>
-            <a-radio-button value="sider">sider</a-radio-button>
-          </a-radio-group>
-          <br />
-          Fixed Header
-          <a-radio-group v-model:value="isFixedHeader">
-            <a-radio-button :value="true">true</a-radio-button>
-            <a-radio-button :value="false">false</a-radio-button>
-          </a-radio-group>
-          <br />
-          <template v-if="!isTop">
-            Fixed Sider
-            <a-radio-group v-model:value="isFixedSider" :disabled="!isEnableFixedSider">
-              <a-radio-button :value="true">true</a-radio-button>
-              <a-radio-button :value="false">false</a-radio-button>
-            </a-radio-group>
-            <br />
-          </template>
-          Header Theme：
-          <a-radio-group v-model:value="headerTheme">
-            <a-radio-button value="light">light</a-radio-button>
-            <a-radio-button value="dark">dark</a-radio-button>
-          </a-radio-group>
-          <br />
-          <template v-if="!isTop">
-            Sider Theme：
-            <a-radio-group v-model:value="siderTheme">
-              <a-radio-button value="light">light</a-radio-button>
-              <a-radio-button value="dark">dark</a-radio-button>
-            </a-radio-group>
-            <br />
-          </template>
-          链接：
-          <a-space>
-            <RouterLink to="/dashboard/analysis">Analysis</RouterLink>
-            <RouterLink to="/dashboard/settings">Settings</RouterLink>
-          </a-space>
-          <br />
-          <br />
-          <br />
           <RouterView />
         </div>
       </a-layout-content>
     </a-layout>
+    <a-drawer
+      v-model:visible="isShowSetting"
+      width="270"
+      title="设置"
+      placement="right"
+      :bodyStyle="{ padding: '16px' }"
+    >
+      Layout：
+      <a-radio-group v-model:value="layout">
+        <a-radio-button value="top">top</a-radio-button>
+        <a-radio-button value="mix">mix</a-radio-button>
+        <a-radio-button value="sider">sider</a-radio-button>
+      </a-radio-group>
+      <br />
+      Fixed Header
+      <a-radio-group v-model:value="isFixedHeader">
+        <a-radio-button :value="true">true</a-radio-button>
+        <a-radio-button :value="false">false</a-radio-button>
+      </a-radio-group>
+      <br />
+      <template v-if="!isTop">
+        Fixed Sider
+        <a-radio-group v-model:value="isFixedSider" :disabled="!isEnableFixedSider">
+          <a-radio-button :value="true">true</a-radio-button>
+          <a-radio-button :value="false">false</a-radio-button>
+        </a-radio-group>
+        <br />
+      </template>
+      Header Theme：
+      <a-radio-group v-model:value="headerTheme">
+        <a-radio-button value="light">light</a-radio-button>
+        <a-radio-button value="dark">dark</a-radio-button>
+      </a-radio-group>
+      <br />
+      <template v-if="!isTop">
+        Sider Theme：
+        <a-radio-group v-model:value="siderTheme">
+          <a-radio-button value="light">light</a-radio-button>
+          <a-radio-button value="dark">dark</a-radio-button>
+        </a-radio-group>
+        <br />
+      </template>
+      内容全屏：
+      <a-radio-group v-model:value="isContentFullscreen">
+        <a-radio-button :value="true">true</a-radio-button>
+        <a-radio-button :value="false">false</a-radio-button>
+      </a-radio-group>
+      <br />
+    </a-drawer>
+    <div
+      class="setting-container"
+      @click="
+        () => {
+          isShowSetting = !isShowSetting
+        }
+      "
+    >
+      <SettingOutlined />
+    </div>
   </a-layout>
 </template>
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
+import { useFullscreen } from '@vueuse/core'
 import {
   DashboardOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  SettingOutlined
+  SettingOutlined,
+  FullscreenOutlined,
+  BulbOutlined,
+  GithubOutlined,
+  PoweroffOutlined,
+  UserSwitchOutlined,
+  UserOutlined,
+  FullscreenExitOutlined
 } from '@ant-design/icons-vue'
 
-const title = ref('Vue Antd Admin')
+const html = ref<HTMLElement | null>(null)
+const { isFullscreen, toggle } = useFullscreen(html)
+// 浏览器全屏
+const isBrowserFullscreen = computed(() => {
+  return isFullscreen.value
+})
+// 内容全屏
+const isContentFullscreen = ref(false)
 
+const title = ref('Vue Antd Admin')
+const userName = ref('unvue')
+const isShowSetting = ref(false)
 // 布局：top/sider/mix
 const layout = ref('mix')
 
