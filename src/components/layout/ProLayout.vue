@@ -25,27 +25,7 @@
           <menu-unfold-outlined v-else style="font-size: 18px" />
         </div>
         <div v-if="isTop" class="unvue-header-menu-container">
-          <a-menu mode="horizontal" :theme="headerTheme">
-            <a-sub-menu key="1">
-              <template #icon>
-                <dashboard-outlined />
-              </template>
-              <template #title>仪表盘</template>
-              <a-menu-item key="2">分析页</a-menu-item>
-              <a-menu-item key="3">工作台</a-menu-item>
-            </a-sub-menu>
-            <a-sub-menu key="4">
-              <template #icon>
-                <setting-outlined />
-              </template>
-              <template #title>系统设置</template>
-              <a-menu-item key="5">用户管理</a-menu-item>
-              <a-menu-item key="6">权限管理</a-menu-item>
-              <a-menu-item key="7">角色管理</a-menu-item>
-              <a-menu-item key="8">数据字典</a-menu-item>
-              <a-menu-item key="9">系统参数</a-menu-item>
-            </a-sub-menu>
-          </a-menu>
+          <SimpleMenu mode="horizontal" :theme="headerTheme" :data="menuInfo" />
         </div>
       </div>
       <div class="unvue-header-right">
@@ -128,27 +108,7 @@
         <h3 v-if="!isSiderCollapsed">{{ title }}</h3>
       </div>
       <div class="unvue-menu-container">
-        <a-menu mode="inline" :theme="siderTheme">
-          <a-sub-menu key="1">
-            <template #icon>
-              <dashboard-outlined />
-            </template>
-            <template #title>仪表盘</template>
-            <a-menu-item key="2">分析页</a-menu-item>
-            <a-menu-item key="3">工作台</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="4">
-            <template #icon>
-              <setting-outlined />
-            </template>
-            <template #title>系统设置</template>
-            <a-menu-item key="5">用户管理</a-menu-item>
-            <a-menu-item key="6">权限管理</a-menu-item>
-            <a-menu-item key="7">角色管理</a-menu-item>
-            <a-menu-item key="8">数据字典</a-menu-item>
-            <a-menu-item key="9">系统参数</a-menu-item>
-          </a-sub-menu>
-        </a-menu>
+        <SimpleMenu mode="inline" :theme="siderTheme" :data="menuInfo" />
       </div>
     </a-layout-sider>
     <a-layout-sider
@@ -171,27 +131,7 @@
         :theme="siderTheme"
         :class="{ 'unvue-sider-fixed': isFixedSider, 'unvue-layout-sider-dark': isSiderDark }"
       >
-        <a-menu mode="inline" :theme="siderTheme">
-          <a-sub-menu key="1">
-            <template #icon>
-              <dashboard-outlined />
-            </template>
-            <template #title>仪表盘</template>
-            <a-menu-item key="2">分析页</a-menu-item>
-            <a-menu-item key="3">工作台</a-menu-item>
-          </a-sub-menu>
-          <a-sub-menu key="4">
-            <template #icon>
-              <setting-outlined />
-            </template>
-            <template #title>系统设置</template>
-            <a-menu-item key="5">用户管理</a-menu-item>
-            <a-menu-item key="6">权限管理</a-menu-item>
-            <a-menu-item key="7">角色管理</a-menu-item>
-            <a-menu-item key="8">数据字典</a-menu-item>
-            <a-menu-item key="9">系统参数</a-menu-item>
-          </a-sub-menu>
-        </a-menu>
+        <SimpleMenu mode="inline" :theme="siderTheme" :data="menuInfo" />
       </a-layout-sider>
       <a-layout-sider
         v-if="isMix && isFixedSider && !isContentFullscreen"
@@ -364,6 +304,8 @@ import {
   UserOutlined,
   FullscreenExitOutlined
 } from '@ant-design/icons-vue'
+import SimpleMenu from '@/components/menu/SimpleMenu.vue'
+import type { MenuInfo } from '@/types/types'
 
 const html = ref<HTMLElement | null>(null)
 const { isFullscreen, toggle } = useFullscreen(html)
@@ -430,6 +372,39 @@ watchEffect(() => {
     }
   }
 })
+
+const menuInfo: MenuInfo[] = [
+  {
+    key: '1',
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: 'ProLayout',
+    meta: {
+      title: '仪表盘'
+    },
+    redirect: '/dashboard/analysis',
+    children: [
+      {
+        key: '2',
+        path: 'analysis',
+        name: 'Analysis',
+        component: 'Dashboard',
+        meta: {
+          title: '分析页'
+        }
+      },
+      {
+        key: '3',
+        path: 'settings',
+        name: 'Settings',
+        component: 'Settings',
+        meta: {
+          title: '系统设置'
+        }
+      }
+    ]
+  }
+]
 </script>
 <style lang="less">
 @import '@/less/theme.less';
