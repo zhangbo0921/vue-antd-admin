@@ -10,10 +10,7 @@
       }"
     >
       <div class="unvue-header-left">
-        <div class="logo">
-          <img src="/static/logo.png" />
-          <h3>{{ title }}</h3>
-        </div>
+        <Logo :title="title" :img="logoPath" />
       </div>
       <div class="unvue-header-menu">
         <div
@@ -29,61 +26,7 @@
         </div>
       </div>
       <div class="unvue-header-right">
-        <div class="header-item-container">
-          <a-space size="middle">
-            <div class="header-item">
-              <a-badge :dot="true">
-                <a-tooltip placement="bottom">
-                  <template #title>消息</template>
-                  <bulb-outlined style="font-size: 20px" />
-                </a-tooltip>
-              </a-badge>
-            </div>
-            <div class="header-item">
-              <a href="https://github.com/zhangbo0921/vue-antd-admin" target="_blank">
-                <a-tooltip placement="bottom">
-                  <template #title>仓库</template>
-                  <github-outlined style="font-size: 20px" />
-                </a-tooltip>
-              </a>
-            </div>
-            <div class="header-item" @click="toggle">
-              <a-tooltip placement="bottom">
-                <fullscreen-outlined v-if="!isBrowserFullscreen" style="font-size: 20px" />
-                <fullscreen-exit-outlined v-else style="font-size: 20px" />
-              </a-tooltip>
-            </div>
-            <div class="header-item">
-              <a-dropdown trigger="click">
-                <a-avatar>
-                  {{ userName }}
-                </a-avatar>
-                <template #overlay>
-                  <a-menu>
-                    <a-menu-item>
-                      <template #icon>
-                        <user-outlined />
-                      </template>
-                      <a href="javascript:;">我的信息</a>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <template #icon>
-                        <user-switch-outlined />
-                      </template>
-                      <a href="javascript:;">切换角色</a>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <template #icon>
-                        <poweroff-outlined />
-                      </template>
-                      <a href="javascript:;">安全退出</a>
-                    </a-menu-item>
-                  </a-menu>
-                </template>
-              </a-dropdown>
-            </div>
-          </a-space>
-        </div>
+        <HeaderItem />
       </div>
     </a-layout-header>
     <a-layout-header
@@ -103,10 +46,11 @@
       :class="{ 'unvue-sider-fixed': isFixedSider, 'unvue-layout-sider-dark': isSiderDark }"
       :style="isFixedSider && isSider ? { overflow: 'hidden', height: '100vh' } : {}"
     >
-      <div class="logo" :style="isSiderCollapsed ? { width: siderCollapsedWidth + 'px' } : {}">
-        <img src="/static/logo.png" />
-        <h3 v-if="!isSiderCollapsed">{{ title }}</h3>
-      </div>
+      <Logo
+        :title="title"
+        :img="logoPath"
+        :style="isSiderCollapsed ? { width: siderCollapsedWidth + 'px' } : {}"
+      />
       <div class="unvue-menu-container">
         <SimpleMenu mode="inline" :theme="siderTheme" :data="menuInfo" />
       </div>
@@ -160,61 +104,7 @@
             </div>
           </div>
           <div class="unvue-header-right">
-            <div class="header-item-container">
-              <a-space size="middle">
-                <div class="header-item">
-                  <a-badge :dot="true">
-                    <a-tooltip placement="bottom">
-                      <template #title>消息</template>
-                      <bulb-outlined style="font-size: 20px" />
-                    </a-tooltip>
-                  </a-badge>
-                </div>
-                <div class="header-item">
-                  <a href="https://github.com/zhangbo0921/vue-antd-admin" target="_blank">
-                    <a-tooltip placement="bottom">
-                      <template #title>仓库</template>
-                      <github-outlined style="font-size: 20px" />
-                    </a-tooltip>
-                  </a>
-                </div>
-                <div class="header-item" @click="toggle">
-                  <a-tooltip placement="bottom">
-                    <fullscreen-outlined v-if="!isBrowserFullscreen" style="font-size: 20px" />
-                    <fullscreen-exit-outlined v-else style="font-size: 20px" />
-                  </a-tooltip>
-                </div>
-                <div class="header-item">
-                  <a-dropdown trigger="click">
-                    <a-avatar>
-                      {{ userName }}
-                    </a-avatar>
-                    <template #overlay>
-                      <a-menu>
-                        <a-menu-item>
-                          <template #icon>
-                            <user-outlined />
-                          </template>
-                          <a href="javascript:;">我的信息</a>
-                        </a-menu-item>
-                        <a-menu-item>
-                          <template #icon>
-                            <user-switch-outlined />
-                          </template>
-                          <a href="javascript:;">切换角色</a>
-                        </a-menu-item>
-                        <a-menu-item>
-                          <template #icon>
-                            <poweroff-outlined />
-                          </template>
-                          <a href="javascript:;">安全退出</a>
-                        </a-menu-item>
-                      </a-menu>
-                    </template>
-                  </a-dropdown>
-                </div>
-              </a-space>
-            </div>
+            <HeaderItem />
           </div>
         </a-layout-header>
         <a-layout-header
@@ -290,34 +180,17 @@
 </template>
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
-import { useFullscreen } from '@vueuse/core'
-import {
-  DashboardOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  SettingOutlined,
-  FullscreenOutlined,
-  BulbOutlined,
-  GithubOutlined,
-  PoweroffOutlined,
-  UserSwitchOutlined,
-  UserOutlined,
-  FullscreenExitOutlined
-} from '@ant-design/icons-vue'
+import { MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import SimpleMenu from '@/components/menu/SimpleMenu.vue'
+import Logo from '@/components/header/Logo.vue'
+import HeaderItem from '@/components/header/HeaderItem.vue'
 import type { MenuInfo } from '@/types/types'
 
-const html = ref<HTMLElement | null>(null)
-const { isFullscreen, toggle } = useFullscreen(html)
-// 浏览器全屏
-const isBrowserFullscreen = computed(() => {
-  return isFullscreen.value
-})
 // 内容全屏
 const isContentFullscreen = ref(false)
 
 const title = ref('Vue Antd Admin')
-const userName = ref('unvue')
+const logoPath = ref('/static/logo.png')
 const isShowSetting = ref(false)
 // 布局：top/sider/mix
 const layout = ref('mix')
