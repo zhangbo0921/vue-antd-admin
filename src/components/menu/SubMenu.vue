@@ -1,12 +1,16 @@
 <template>
-  <a-sub-menu :key="data?.key">
-    <template #title>{{ data?.meta?.title }}</template>
-    <template v-for="item in data?.children" :key="item.key">
+  <a-sub-menu :key="data.key">
+    <template #icon> <Icon :icon="(data.meta?.icon as string)" />1 </template>
+    <template #title>{{ data.meta?.title }}</template>
+    <template v-for="item in data.children" :key="item.key">
       <template v-if="item.children">
         <SubMenu :data="item" :key="item.key"></SubMenu>
       </template>
       <template v-else>
         <a-menu-item :key="item.key">
+          <template #icon>
+            <Icon :icon="(item.meta?.icon as string)" />
+          </template>
           {{ item.meta?.title }}
         </a-menu-item>
       </template>
@@ -17,8 +21,11 @@
 import type { MenuInfo } from '@/types/types'
 import type { PropType } from 'vue'
 import SubMenu from '@/components/menu/SubMenu.vue'
-
-const props = defineProps({
-  data: Object as PropType<MenuInfo>
+import Icon from '@/components/icon/Icon.vue'
+defineProps({
+  data: {
+    type: Object as PropType<MenuInfo>,
+    required: true
+  }
 })
 </script>

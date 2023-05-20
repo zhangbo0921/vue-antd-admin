@@ -18,8 +18,8 @@
           class="trigger-collapsed"
           @click="() => (isSiderCollapsed = !isSiderCollapsed)"
         >
-          <menu-fold-outlined v-if="!isSiderCollapsed" style="font-size: 18px" />
-          <menu-unfold-outlined v-else style="font-size: 18px" />
+          <Icon icon="menu-fold-outlined" v-if="!isSiderCollapsed" style="font-size: 18px" />
+          <Icon icon="menu-unfold-outlined" v-else style="font-size: 18px" />
         </div>
         <div v-if="isTop" class="unvue-header-menu-container">
           <SimpleMenu mode="horizontal" :theme="headerTheme" :data="menuInfo" />
@@ -99,8 +99,8 @@
         >
           <div class="unvue-header-left" style="justify-content: flex-start">
             <div class="trigger-collapsed" @click="() => (isSiderCollapsed = !isSiderCollapsed)">
-              <menu-fold-outlined v-if="!isSiderCollapsed" style="font-size: 20px" />
-              <menu-unfold-outlined v-else style="font-size: 20px" />
+              <Icon icon="menu-fold-outlined" v-if="!isSiderCollapsed" style="font-size: 20px" />
+              <Icon icon="menu-unfold-outlined" v-else style="font-size: 20px" />
             </div>
           </div>
           <div class="unvue-header-right">
@@ -174,13 +174,12 @@
         }
       "
     >
-      <SettingOutlined />
+      <Icon icon="setting-outlined" />
     </div>
   </a-layout>
 </template>
 <script setup lang="ts">
 import { computed, ref, watchEffect } from 'vue'
-import { MenuFoldOutlined, MenuUnfoldOutlined, SettingOutlined } from '@ant-design/icons-vue'
 import SimpleMenu from '@/components/menu/SimpleMenu.vue'
 import Logo from '@/components/header/Logo.vue'
 import HeaderItem from '@/components/header/HeaderItem.vue'
@@ -253,7 +252,8 @@ const menuInfo: MenuInfo[] = [
     name: 'Dashboard',
     component: 'ProLayout',
     meta: {
-      title: '仪表盘'
+      title: '仪表盘',
+      icon: 'dashboard-outlined'
     },
     redirect: '/dashboard/analysis',
     children: [

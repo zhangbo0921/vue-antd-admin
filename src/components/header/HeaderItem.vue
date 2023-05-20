@@ -5,7 +5,7 @@
         <a-badge :dot="true">
           <a-tooltip placement="bottom">
             <template #title>消息</template>
-            <bulb-outlined style="font-size: 20px" />
+            <Icon icon="bulb-outlined" style="font-size: 20px" />
           </a-tooltip>
         </a-badge>
       </div>
@@ -13,14 +13,14 @@
         <a href="https://github.com/zhangbo0921/vue-antd-admin" target="_blank">
           <a-tooltip placement="bottom">
             <template #title>仓库</template>
-            <github-outlined style="font-size: 20px" />
+            <Icon icon="github-outlined" style="font-size: 20px" />
           </a-tooltip>
         </a>
       </div>
       <div class="header-item" @click="toggleFullscreen">
         <a-tooltip placement="bottom">
-          <fullscreen-outlined v-if="!isBrowserFullscreen" style="font-size: 20px" />
-          <fullscreen-exit-outlined v-else style="font-size: 20px" />
+          <Icon icon="fullscreen-outlined" v-if="!isBrowserFullscreen" style="font-size: 20px" />
+          <Icon icon="fullscreen-exit-outlined" v-else style="font-size: 20px" />
         </a-tooltip>
       </div>
       <div class="header-item">
@@ -32,19 +32,19 @@
             <a-menu>
               <a-menu-item>
                 <template #icon>
-                  <user-outlined />
+                  <Icon icon="user-outlined" />
                 </template>
                 我的信息
               </a-menu-item>
               <a-menu-item>
                 <template #icon>
-                  <user-switch-outlined />
+                  <Icon icon="user-switch-outlined" />
                 </template>
                 切换角色
               </a-menu-item>
               <a-menu-item>
                 <template #icon>
-                  <poweroff-outlined />
+                  <Icon icon="poweroff-outlined" />
                 </template>
                 安全退出
               </a-menu-item>
@@ -56,15 +56,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {
-  FullscreenOutlined,
-  BulbOutlined,
-  GithubOutlined,
-  PoweroffOutlined,
-  UserSwitchOutlined,
-  UserOutlined,
-  FullscreenExitOutlined
-} from '@ant-design/icons-vue'
+import Icon from '@/components/icon/Icon.vue'
 import { useFullscreen } from '@vueuse/core'
 import { computed, ref } from 'vue'
 

@@ -6,6 +6,9 @@
       </template>
       <template v-else>
         <a-menu-item :key="item.key">
+          <template #icon>
+            <Icon :icon="(item.meta?.icon as string)" />
+          </template>
           {{ item.meta?.title }}
         </a-menu-item>
       </template>
@@ -16,6 +19,7 @@
 import type { MenuInfo } from '@/types/types'
 import type { PropType } from 'vue'
 import SubMenu from '@/components/menu/SubMenu.vue'
+import Icon from '@/components/icon/Icon.vue'
 
 const props = defineProps({
   data: Array as PropType<MenuInfo[]>
