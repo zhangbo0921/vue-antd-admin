@@ -49,6 +49,7 @@
       <Logo
         :title="title"
         :img="logoPath"
+        :isSiderCollapsed="isSiderCollapsed"
         :style="isSiderCollapsed ? { width: siderCollapsedWidth + 'px' } : {}"
       />
       <div class="unvue-menu-container">
@@ -184,15 +185,17 @@ import SimpleMenu from '@/components/menu/SimpleMenu.vue'
 import Logo from '@/components/header/Logo.vue'
 import HeaderItem from '@/components/header/HeaderItem.vue'
 import type { MenuInfo } from '@/types/types'
+import { useUserStore } from '@/stores/index'
+import settings from '@/config/setting'
 
 // 内容全屏
 const isContentFullscreen = ref(false)
 
-const title = ref('Vue Antd Admin')
-const logoPath = ref('/static/logo.png')
+const title = ref(settings.title as string)
+const logoPath = ref(settings.logo)
 const isShowSetting = ref(false)
 // 布局：top/sider/mix
-const layout = ref('mix')
+const layout = ref(settings.layout)
 
 const isMix = computed(() => {
   return layout.value === 'mix'
@@ -204,20 +207,20 @@ const isSider = computed(() => {
   return layout.value === 'sider'
 })
 
-const isFixedHeader = ref(true)
-const isFixedSider = ref(false)
+const isFixedHeader = ref(settings.fixHeader)
+const isFixedSider = ref(settings.fixSiderbar)
 
 const isSiderCollapsed = ref(false)
-const siderCollapsedWidth = ref(48)
+const siderCollapsedWidth = ref(settings.collapsedWidth)
 
 // header主题：dark/light
-const headerTheme = ref('light')
+const headerTheme = ref(settings.headerTheme)
 const isHeaderLight = computed(() => {
   return headerTheme.value == 'light'
 })
 
 // sider主题：dark/light
-const siderTheme = ref('dark')
+const siderTheme = ref(settings.siderbarTheme)
 const isSiderDark = computed(() => {
   return siderTheme.value === 'dark'
 })
@@ -245,39 +248,8 @@ watchEffect(() => {
   }
 })
 
-const menuInfo: MenuInfo[] = [
-  {
-    key: '1',
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: 'ProLayout',
-    meta: {
-      title: '仪表盘',
-      icon: 'dashboard-outlined'
-    },
-    redirect: '/dashboard/analysis',
-    children: [
-      {
-        key: '2',
-        path: 'analysis',
-        name: 'Analysis',
-        component: 'Dashboard',
-        meta: {
-          title: '分析页'
-        }
-      },
-      {
-        key: '3',
-        path: 'settings',
-        name: 'Settings',
-        component: 'Settings',
-        meta: {
-          title: '系统设置'
-        }
-      }
-    ]
-  }
-]
+const userStore = useUserStore()
+const menuInfo: MenuInfo[] = userStore.getMenu()
 </script>
 <style lang="less">
 @import '@/less/theme.less';

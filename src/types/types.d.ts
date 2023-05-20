@@ -33,3 +33,66 @@ export interface Meta {
   // frame 地址
   frameSrc?: string
 }
+
+// 配置接口
+export interface AppConfig {
+  // 系统标题
+  title?: string
+  logo: string
+  // 布局
+  layout?: 'sider' | 'top' | 'mix'
+  // 是否分割菜单
+  splitMenus?: boolean
+  // 侧边菜单收缩时的宽度
+  collapsedWidth: number
+  // 是否固定侧边栏
+  fixSiderbar?: boolean
+  // 侧边栏宽度
+  siderbarWidth?: number
+  // 侧边栏主题
+  siderbarTheme?: 'dark' | 'light'
+  // 是否固定Header
+  fixHeader?: boolean
+  // Header 高度
+  headerHeight?: number
+  // Header 主题
+  headerTheme?: 'dark' | 'light'
+  // 内容区 宽度
+  contentWidth?: 'Fluid' | 'Fixed'
+  topLayoutHeaderLeftWidth?: number
+  topLayoutHeaderRightWidth?: number
+  // 页面缓存类型
+  cacheType?: 'keepAlive' | 'cachePage'
+  // 开启多标签
+  enableMultiTab?: boolean
+  // 固定多标签
+  fixedMultiTab?: boolean
+  // 全屏
+  fullScreen?: boolean
+  // 刷新页面
+  enableReLoad?: boolean
+  // 显示Title
+  showTitle?: boolean
+  // 显示Logo
+  showLogo?: boolean
+  // 顶栏
+  showTopBar?: boolean
+  // 侧边栏
+  showSiderBar?: boolean
+}
+
+export interface RouterConfig {
+  // 登录页
+  loginPath: string
+  // 首页
+  homePath: string
+  pageNotFound: string
+  pageNotFoundName: string
+  errorPage: string
+  // 是否本地路由
+  localRoutes: boolean
+  // 是否开启NProgress
+  openNProgress: boolean
+  // 无需登录路由
+  noLoginPath: string[]
+}

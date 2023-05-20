@@ -3,3 +3,5 @@ export enum Layout {
   RouteView = 'RouteView',
   FrameView = 'FrameView'
 }
+
+export const RedirectName = 'Redirect'
