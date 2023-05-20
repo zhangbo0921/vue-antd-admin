@@ -1,17 +1,21 @@
 <template>
   <div class="logo">
     <img :src="img" />
-    <h3>{{ title }}</h3>
+    <h3 v-if="!isSiderCollapsed">{{ title }}</h3>
   </div>
 </template>
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   title: {
     required: true,
     type: String
   },
   img: {
     type: String,
+    required: true
+  },
+  isSiderCollapsed: {
+    type: Boolean,
     required: true
   }
 })
