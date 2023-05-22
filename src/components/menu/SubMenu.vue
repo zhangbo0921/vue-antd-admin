@@ -1,6 +1,8 @@
 <template>
   <a-sub-menu :key="data.key">
-    <template #icon> <Icon :icon="(data.meta?.icon as string)" />1 </template>
+    <template #icon v-if="data.meta?.icon">
+      <Icon :icon="(data.meta?.icon as string)" />1
+    </template>
     <template #title>{{ data.meta?.title }}</template>
     <template v-for="item in data.children" :key="item.key">
       <template v-if="item.children">
@@ -8,7 +10,7 @@
       </template>
       <template v-else>
         <a-menu-item :key="item.key">
-          <template #icon>
+          <template #icon v-if="item.meta?.icon">
             <Icon :icon="(item.meta?.icon as string)" />
           </template>
           {{ item.meta?.title }}

@@ -6,7 +6,7 @@
       </template>
       <template v-else>
         <a-menu-item :key="item.key">
-          <template #icon>
+          <template #icon v-if="item.meta?.icon">
             <Icon :icon="(item.meta?.icon as string)" />
           </template>
           {{ item.meta?.title }}

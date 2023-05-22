@@ -7,6 +7,9 @@ defineProps({
   icon: {
     type: String,
     required: true
+  },
+  size: {
+    type: Number
   }
 })
 </script>
