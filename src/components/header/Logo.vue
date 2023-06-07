@@ -16,7 +16,7 @@ defineProps({
   },
   isSiderCollapsed: {
     type: Boolean,
-    required: true
+    required: false
   }
 })
 </script>
