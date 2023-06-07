@@ -5,10 +5,11 @@ import settings from '@/config/setting'
 import { RedirectName } from '@/types/constants'
 
 import dashboard from '@/router/modules/dashboard'
+import type { MenuInfo } from '@/types/types'
 
 const localRoute = [dashboard]
 
-const rootRoutes: RouteRecordRaw = {
+const rootRoutes: MenuInfo = {
   path: '/',
   name: 'Root',
   component: RouteView,
@@ -27,7 +28,7 @@ const rootRoutes: RouteRecordRaw = {
   ]
 }
 
-const redirect: RouteRecordRaw = {
+const redirect: MenuInfo = {
   path: '/redirect',
   name: 'RedirectView',
   meta: {
@@ -47,13 +48,12 @@ const redirect: RouteRecordRaw = {
   ]
 }
 // 404路由
-export const PAGE_NOT_FOUND_ROUTE: RouteRecordRaw = {
+export const PAGE_NOT_FOUND_ROUTE: MenuInfo = {
   path: '/:path(.*)*',
   name: settings.pageNotFoundName,
   component: ProLayout,
   meta: {
     title: 'PageNotFound',
-    hideBreadcrumb: true,
     hideMenu: true
   },
   children: [
@@ -62,7 +62,6 @@ export const PAGE_NOT_FOUND_ROUTE: RouteRecordRaw = {
       name: 'PageNotFound',
       meta: {
         title: 'PageNotFound',
-        hideBreadcrumb: true,
         hideMenu: true
       },
       component: () => import('@/views/exception/PageNotFoundView.vue')
@@ -70,7 +69,7 @@ export const PAGE_NOT_FOUND_ROUTE: RouteRecordRaw = {
   ]
 }
 
-export const baseRoutes = [
+export const baseRoutes: MenuInfo[] = [
   rootRoutes,
   ...(settings.localRoutes ? localRoute : []),
   redirect,

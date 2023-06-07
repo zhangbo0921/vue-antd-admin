@@ -3,7 +3,7 @@
  */
 export interface MenuInfo {
   // 唯一主键
-  key: string | number
+  key?: string | number
   // 路由路径
   path: string
   // 路由名称/组件名称

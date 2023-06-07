@@ -20,6 +20,7 @@ export const asyncImportRoute = (menus: MenuInfo[]) => {
         menu.component = importView(views, component as string)
       }
     }
+    children && asyncImportRoute(children)
   })
 }
 
