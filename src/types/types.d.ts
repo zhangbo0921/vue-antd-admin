@@ -96,3 +96,10 @@ export interface RouterConfig {
   // 无需登录路由
   noLoginPath: string[]
 }
+
+// 后台返回信息
+export interface R<T> {
+  code: number
+  msg: string
+  data: T
+}

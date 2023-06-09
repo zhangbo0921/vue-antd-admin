@@ -4,4 +4,9 @@ export enum Layout {
   FrameView = 'FrameView'
 }
 
+export enum Constants {
+  AccessToken = 'access_token',
+  RefreshToken = 'refresh_token'
+}
+
 export const RedirectName = 'Redirect'
