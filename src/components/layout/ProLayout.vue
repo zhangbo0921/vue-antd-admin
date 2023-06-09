@@ -249,7 +249,12 @@ watchEffect(() => {
 })
 
 const userStore = useUserStore()
-const menuInfo: MenuInfo[] = userStore.getMenu()
+userStore.login({
+  username: 'admin',
+  password: 'admin'
+})
+const menuInfo: MenuInfo[] = userStore.menus
+console.log(menuInfo)
 </script>
 <style lang="less">
 @import '@/less/theme.less';
