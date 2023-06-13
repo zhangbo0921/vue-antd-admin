@@ -1,4 +1,3 @@
-import type { RouteRecordRaw } from 'vue-router'
 import ProLayout from '@/components/layout/ProLayout.vue'
 import RouteView from '@/components/layout/RouteView.vue'
 import settings from '@/config/setting'
@@ -13,15 +12,22 @@ const rootRoutes: MenuInfo = {
   path: '/',
   name: 'Root',
   component: RouteView,
-  redirect: '/dashboard/analysis',
+  redirect: '/dashboard/analysis'
+}
+
+const auth: MenuInfo = {
+  path: '/auth',
+  name: 'Auth',
+  component: RouteView,
+  redirect: '/auth/login',
   children: [
     {
-      path: '/auth/login',
+      path: 'login',
       name: 'LoginPage',
       component: () => import('@/views/login/LoginView.vue')
     },
     {
-      path: '/auth/register',
+      path: 'register',
       name: 'RegisterPage',
       component: () => import('@/views/login/RegisterView.vue')
     }
@@ -71,6 +77,7 @@ export const PAGE_NOT_FOUND_ROUTE: MenuInfo = {
 
 export const baseRoutes: MenuInfo[] = [
   rootRoutes,
+  auth,
   ...(settings.localRoutes ? localRoute : []),
   redirect,
   PAGE_NOT_FOUND_ROUTE
