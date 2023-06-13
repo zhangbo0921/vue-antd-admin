@@ -4,7 +4,7 @@ import { baseRoutes } from '@/config/route.config'
 
 const routes = [...baseRoutes]
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHistory(),
   routes: routes as RouteRecordRaw[]
 })
