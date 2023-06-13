@@ -2,7 +2,6 @@ import ProLayoutVue from '@/components/layout/ProLayout.vue'
 import type { MenuInfo } from '@/types/types'
 
 const dashboardRoutes: MenuInfo = {
-  key: 'dashboard',
   path: '/dashboard',
   name: 'Dashboard',
   component: ProLayoutVue,

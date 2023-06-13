@@ -7,7 +7,7 @@ import type { LoginParams, Token } from '@/api/model/system'
 import store from 'store2'
 import { Constants } from '@/types/constants'
 import jwtDecode from 'jwt-decode'
-import { unref } from 'vue'
+import { toRaw } from 'vue'
 
 interface UserState {
   menus: MenuInfo[]
@@ -45,7 +45,11 @@ export const userStore = defineStore('userStore', {
     }
   },
   getters: {
-    tokenValue: (state) => state.token?.access_token || store.get(Constants.AccessToken)
+    tokenValue: (state) => state.token?.access_token || store.get(Constants.AccessToken),
+    showMenuValue: (state) => {
+      console.log(state.menus)
+      console.log(toRaw(state.menus))
+    }
   },
   actions: {
     // 登录
@@ -55,11 +59,13 @@ export const userStore = defineStore('userStore', {
         // 添加token
         store.set(Constants.AccessToken, this.token.access_token)
       }
-      this.afterLogin(unref(this.token))
+      this.afterLogin()
     },
     // 登录后逻辑
-    afterLogin(data: Token) {
+    afterLogin() {
+      // 获取用户信息
       this.getUserInfo()
+      // 获取菜单信息
       this.getMenu()
     },
     getUserInfo() {
@@ -68,11 +74,6 @@ export const userStore = defineStore('userStore', {
         this.userInfo.homePath = settings.homePath
       }
     },
-    setRoutesLoadSuccess(flag: boolean) {
-      this.isRoutesLoadSuccess = flag
-    },
-    // 退出
-    logout() {},
     async getMenu() {
       console.debug('localRoutes:', settings.localRoutes)
       if (settings.localRoutes) {
@@ -80,12 +81,12 @@ export const userStore = defineStore('userStore', {
       } else {
         this.menus = (await getMenus()).data
       }
-      console.debug(this.menus)
     },
-    // 设置前端菜单
-    setFrontMenus(menus: MenuInfo[]) {},
-    // 设置动态路由
-    setDynamicRoute(menus: MenuInfo[]) {},
+    setRoutesLoadSuccess(flag: boolean) {
+      this.isRoutesLoadSuccess = flag
+    },
+    // 退出
+    logout() {},
     // 过滤跟路径和不显示菜单
     filterMenus(menus: MenuInfo[]): MenuInfo[] {
       return menus.filter((menu) => {

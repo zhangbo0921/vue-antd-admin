@@ -61,7 +61,7 @@ export const createPermissionGuard = (router: Router) => {
     //    3.5. 跳转页面
 
     if (!userStore.isRoutesLoadSuccess) {
-      await userStore.afterLogin(store.get(Constants.AccessToken))
+      await userStore.afterLogin()
       const addRoute = toRaw(userStore.showMenus)
       addRoute.forEach((r) => router.addRoute(r as RouteRecordRaw))
       userStore.setRoutesLoadSuccess(true)
