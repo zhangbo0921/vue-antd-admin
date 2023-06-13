@@ -26,7 +26,7 @@ export const appSetting: AppConfig = {
 }
 
 export const routerSetting: RouterConfig = {
-  loginPath: '/login', // 登录页
+  loginPath: '/auth/login', // 登录页
   homePath: '/dashboard/analysis', // 首页
   pageNotFound: '/404',
   pageNotFoundName: 'PageNotFoundName',

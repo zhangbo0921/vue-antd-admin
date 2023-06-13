@@ -16,12 +16,12 @@ const rootRoutes: MenuInfo = {
   redirect: '/dashboard/analysis',
   children: [
     {
-      path: 'login',
+      path: '/auth/login',
       name: 'LoginPage',
       component: () => import('@/views/login/LoginView.vue')
     },
     {
-      path: 'register',
+      path: '/auth/register',
       name: 'RegisterPage',
       component: () => import('@/views/login/RegisterView.vue')
     }
