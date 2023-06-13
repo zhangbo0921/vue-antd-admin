@@ -97,6 +97,19 @@ export interface RouterConfig {
   noLoginPath: string[]
 }
 
+export interface UserInfo {
+  userId: string | number
+  tenantId: string | number
+  userName: string
+  nickName: string
+  avatar: string
+  deptId: string | number
+  deptPid: string | number
+  deptPids: string
+  deptName: string
+  homePath: string
+}
+
 // 后台返回信息
 export interface R<T> {
   code: number
