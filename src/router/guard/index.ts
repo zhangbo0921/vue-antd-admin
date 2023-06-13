@@ -61,10 +61,17 @@ export const createPermissionGuard = (router: Router) => {
     //    3.5. 跳转页面
 
     if (!userStore.isRoutesLoadSuccess) {
+      // 4. 刷新后，重新获取用户、菜单、路由信息，并添加路由
+      //    4.1. 调用afterLogin，重新获取用户信息和菜单
+      //    4.2. 调用重新获取路由，并添加
+      //    4.3. 设置路由加载状态为：成功
       await userStore.afterLogin()
-      const addRoute = toRaw(userStore.showMenus)
-      addRoute.forEach((r) => router.addRoute(r as RouteRecordRaw))
+      const addRoute = userStore.getAddRoutes()
+      addRoute.forEach((r) => {
+        router.addRoute(r as RouteRecordRaw)
+      })
       userStore.setRoutesLoadSuccess(true)
+
       next({
         path: to.path,
         replace: true

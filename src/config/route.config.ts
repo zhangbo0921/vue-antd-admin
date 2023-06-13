@@ -6,20 +6,24 @@ import { RedirectName } from '@/types/constants'
 import dashboard from '@/router/modules/dashboard'
 import type { MenuInfo } from '@/types/types'
 
-const localRoute = [dashboard]
+export const syncRoute = [dashboard]
 
-const rootRoutes: MenuInfo = {
+export const rootRoutes: MenuInfo = {
   path: '/',
   name: 'Root',
   component: RouteView,
   redirect: '/dashboard/analysis'
 }
 
-const auth: MenuInfo = {
+export const auth: MenuInfo = {
   path: '/auth',
   name: 'Auth',
   component: RouteView,
   redirect: '/auth/login',
+  meta: {
+    title: '安全认证',
+    hideMenu: true
+  },
   children: [
     {
       path: 'login',
@@ -34,7 +38,7 @@ const auth: MenuInfo = {
   ]
 }
 
-const redirect: MenuInfo = {
+export const redirect: MenuInfo = {
   path: '/redirect',
   name: 'RedirectView',
   meta: {
@@ -75,10 +79,4 @@ export const PAGE_NOT_FOUND_ROUTE: MenuInfo = {
   ]
 }
 
-export const baseRoutes: MenuInfo[] = [
-  rootRoutes,
-  auth,
-  ...(settings.localRoutes ? localRoute : []),
-  redirect,
-  PAGE_NOT_FOUND_ROUTE
-]
+export const baseRoutes: MenuInfo[] = [rootRoutes, auth, redirect, PAGE_NOT_FOUND_ROUTE]

@@ -250,7 +250,7 @@ watchEffect(() => {
 
 const userStore = useUserStore()
 
-const menuInfo: MenuInfo[] = userStore.menus
+const menuInfo: MenuInfo[] = userStore.getShowMenu()
 </script>
 <style lang="less">
 @import '@/less/theme.less';

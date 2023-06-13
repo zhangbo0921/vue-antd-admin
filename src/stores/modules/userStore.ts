@@ -1,7 +1,7 @@
 import type { MenuInfo, UserInfo } from '@/types/types'
 import { defineStore } from 'pinia'
 import settings from '@/config/setting'
-import { baseRoutes } from '@/config/route.config'
+import { syncRoute, baseRoutes } from '@/config/route.config'
 import { login, getMenus } from '@/api/system/user'
 import type { LoginParams, Token } from '@/api/model/system'
 import store from 'store2'
@@ -12,6 +12,7 @@ import { toRaw } from 'vue'
 interface UserState {
   menus: MenuInfo[]
   showMenus: MenuInfo[]
+  addRoutes: MenuInfo[]
   userInfo: UserInfo
   token: Token
   isRoutesLoadSuccess: boolean
@@ -22,6 +23,7 @@ export const userStore = defineStore('userStore', {
     return {
       menus: [],
       showMenus: [],
+      addRoutes: [],
       token: {
         access_token: '',
         token_type: '',
@@ -45,11 +47,7 @@ export const userStore = defineStore('userStore', {
     }
   },
   getters: {
-    tokenValue: (state) => state.token?.access_token || store.get(Constants.AccessToken),
-    showMenuValue: (state) => {
-      console.log(state.menus)
-      console.log(toRaw(state.menus))
-    }
+    tokenValue: (state) => state.token?.access_token || store.get(Constants.AccessToken)
   },
   actions: {
     // 登录
@@ -77,10 +75,24 @@ export const userStore = defineStore('userStore', {
     async getMenu() {
       console.debug('localRoutes:', settings.localRoutes)
       if (settings.localRoutes) {
-        this.menus = baseRoutes
+        this.menus = [...baseRoutes, ...syncRoute]
+        this.addRoutes = syncRoute
       } else {
-        this.menus = (await getMenus()).data
+        const syncMenu = (await getMenus()).data
+        this.menus = [...baseRoutes, ...syncMenu]
+        this.addRoutes = syncMenu
       }
+    },
+    getShowMenu(): MenuInfo[] {
+      const menus = toRaw(this.menus)
+      const showMenu = this.filterMenus(menus)
+      console.debug('showMenu', showMenu)
+      return showMenu
+    },
+    getAddRoutes() {
+      const addRoutes = toRaw(this.addRoutes)
+      console.debug('addRoute', addRoutes)
+      return addRoutes
     },
     setRoutesLoadSuccess(flag: boolean) {
       this.isRoutesLoadSuccess = flag
