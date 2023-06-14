@@ -13,7 +13,9 @@
           <template #icon v-if="item.meta?.icon">
             <Icon :icon="(item.meta?.icon as string)" />
           </template>
-          {{ item.meta?.title }}
+
+          <RouterLink v-if="!isUrl(item.path)" :to="item.path"> {{ item.meta?.title }}</RouterLink>
+          <a :href="item.path" target="_blank" v-else> {{ item.meta?.title }}</a>
         </a-menu-item>
       </template>
     </template>
@@ -24,6 +26,7 @@ import type { MenuInfo } from '@/types/types'
 import type { PropType } from 'vue'
 import SubMenu from '@/components/menu/SubMenu.vue'
 import Icon from '@/components/icon/Icon.vue'
+import { isUrl } from '@/utils/is'
 defineProps({
   data: {
     type: Object as PropType<MenuInfo>,
