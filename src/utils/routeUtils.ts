@@ -8,7 +8,7 @@ const ProLayout = () => import('@/components/layout/ProLayout.vue')
 const RouteView = () => import('@/components/layout/RouteView.vue')
 
 export const asyncImportRoute = (menus: MenuInfo[]) => {
-  const views: ViewType = import.meta.glob('../views/**/*.{vue}')
+  const views: ViewType = import.meta.glob('../views/**/*.vue')
   if (!menus) return
   menus.forEach((menu) => {
     const { component, children } = menu
