@@ -2,12 +2,13 @@ import type { MenuInfo, UserInfo } from '@/types/types'
 import { defineStore } from 'pinia'
 import settings from '@/config/setting'
 import { syncRoute, baseRoutes } from '@/config/route.config'
-import { login, getMenus } from '@/api/system/user'
+import { login, getMenus } from '@/api/system/auth'
 import type { LoginParams, Token } from '@/api/model/system'
 import store from 'store2'
 import { Constants } from '@/types/constants'
 import jwtDecode from 'jwt-decode'
 import { toRaw } from 'vue'
+import { asyncImportRoute } from '@/utils/routeUtils'
 
 interface UserState {
   menus: MenuInfo[]
@@ -60,17 +61,18 @@ export const userStore = defineStore('userStore', {
       this.afterLogin()
     },
     // 登录后逻辑
-    afterLogin() {
+    async afterLogin() {
       // 获取用户信息
-      this.getUserInfo()
+      await this.getUserInfo()
       // 获取菜单信息
-      this.getMenu()
+      await this.getMenu()
     },
     getUserInfo() {
       this.userInfo = jwtDecode(store.get(Constants.AccessToken)) as UserInfo
       if (!this.userInfo.homePath) {
         this.userInfo.homePath = settings.homePath
       }
+      console.log('用户信息', toRaw(this.userInfo))
     },
     async getMenu() {
       console.debug('localRoutes:', settings.localRoutes)
@@ -79,6 +81,7 @@ export const userStore = defineStore('userStore', {
         this.addRoutes = syncRoute
       } else {
         const syncMenu = (await getMenus()).data
+        asyncImportRoute(syncMenu)
         this.menus = [...baseRoutes, ...syncMenu]
         this.addRoutes = syncMenu
       }
@@ -109,6 +112,10 @@ export const userStore = defineStore('userStore', {
           return true
         }
       })
+    },
+    clearAll() {
+      this.$reset()
+      store.clearAll()
     }
   }
 })
