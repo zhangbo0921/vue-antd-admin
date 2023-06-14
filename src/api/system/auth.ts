@@ -3,8 +3,9 @@ import http from '@/utils/http/request'
 import type { LoginParams, Token } from '../model/system'
 
 enum Api {
-  Login = '/mock/auth/auth/login',
-  GetMenus = '/mock/auth/login'
+  Login = '/api/auth/auth/login',
+  Logout = '/api/auth/auth/logout',
+  GetRoutes = '/api/system/auth/getRoutes'
 }
 
 // 登录
@@ -13,5 +14,5 @@ export const login = (data: LoginParams): Promise<R<Token>> => {
 }
 
 export const getMenus = (): Promise<R<MenuInfo[]>> => {
-  return http.post<any, R<MenuInfo[]>>(Api.GetMenus)
+  return http.post<any, R<MenuInfo[]>>(Api.GetRoutes)
 }

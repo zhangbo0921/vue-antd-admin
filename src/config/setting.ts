@@ -31,7 +31,7 @@ export const routerSetting: RouterConfig = {
   pageNotFound: '/404',
   pageNotFoundName: 'PageNotFoundName',
   errorPage: '/error',
-  localRoutes: true, // 是否本地路由
+  localRoutes: false, // 是否本地路由
   openNProgress: true, // 是否开启NProgress
   noLoginPath: [
     // 允许不登录的路由

@@ -43,15 +43,19 @@ const loading = ref(false)
 
 const loginParam = ref<LoginParams>({
   username: 'admin',
-  password: 'admin'
+  password: 'zhangbo@123',
+  device: 'PC'
 })
 
 const login = async () => {
-  loading.value = true
-  await userStore.login(unref(loginParam))
-  loading.value = false
-  if (userStore.userInfo.deptName) {
-    replace({ path: (route.query.redirect as string) || userStore.userInfo.homePath })
+  try {
+    loading.value = true
+    await userStore.login(unref(loginParam))
+    if (userStore.userInfo.deptName) {
+      replace({ path: (route.query.redirect as string) || userStore.userInfo.homePath })
+    }
+  } finally {
+    loading.value = false
   }
 }
 
