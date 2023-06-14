@@ -1,10 +1,10 @@
-import ProLayoutVue from '@/components/layout/ProLayout.vue'
+import ProLayout from '@/components/layout/ProLayout.vue'
 import type { MenuInfo } from '@/types/types'
 
 const dashboardRoutes: MenuInfo = {
   path: '/dashboard',
   name: 'Dashboard',
-  component: ProLayoutVue,
+  component: ProLayout,
   meta: {
     title: '仪表盘',
     icon: 'dashboard-outlined'
