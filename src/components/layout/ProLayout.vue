@@ -22,7 +22,12 @@
           <Icon icon="menu-unfold-outlined" v-else style="font-size: 18px" />
         </div>
         <div v-if="isTop" class="unvue-header-menu-container">
-          <SimpleMenu mode="horizontal" :theme="headerTheme" :data="menuInfo" />
+          <SimpleMenu
+            mode="horizontal"
+            :theme="headerTheme"
+            :data="menuInfo"
+            :openKeys="menuState.openKeys"
+          />
         </div>
       </div>
       <div class="unvue-header-right">
@@ -53,7 +58,12 @@
         :style="isSiderCollapsed ? { width: siderCollapsedWidth + 'px' } : {}"
       />
       <div class="unvue-menu-container">
-        <SimpleMenu mode="inline" :theme="siderTheme" :data="menuInfo" />
+        <SimpleMenu
+          mode="inline"
+          :theme="siderTheme"
+          :data="menuInfo"
+          :openKeys="menuState.openKeys"
+        />
       </div>
     </a-layout-sider>
     <a-layout-sider
@@ -76,7 +86,12 @@
         :theme="siderTheme"
         :class="{ 'unvue-sider-fixed': isFixedSider, 'unvue-layout-sider-dark': isSiderDark }"
       >
-        <SimpleMenu mode="inline" :theme="siderTheme" :data="menuInfo" />
+        <SimpleMenu
+          mode="inline"
+          :theme="siderTheme"
+          :data="menuInfo"
+          :openKeys="menuState.openKeys"
+        />
       </a-layout-sider>
       <a-layout-sider
         v-if="isMix && isFixedSider && !isContentFullscreen"
@@ -187,6 +202,8 @@ import HeaderItem from '@/components/header/HeaderItem.vue'
 import type { MenuInfo } from '@/types/types'
 import { useUserStore } from '@/stores/index'
 import settings from '@/config/setting'
+import { listenerRouteChange } from '@/utils/routeChange'
+import type { RouteLocationNormalized } from 'vue-router'
 
 // 内容全屏
 const isContentFullscreen = ref(false)
@@ -251,6 +268,35 @@ watchEffect(() => {
 const userStore = useUserStore()
 
 const menuInfo: MenuInfo[] = userStore.getShowMenu()
+
+const menuState = ref({
+  openKeys: [],
+  selectKeys: []
+})
+
+const handleChangeRoute = (route: RouteLocationNormalized) => {
+  console.log(getMenuOpenKeys(route))
+}
+
+const getMenuOpenKeys = (route: RouteLocationNormalized, includeMe = false) => {
+  const path = userStore.getShowMenu().filter((item) => {
+    debugger
+    return (
+      item.path === route.path ||
+      item.path === route.fullPath ||
+      item.redirect === route.fullPath ||
+      item.redirect === route.path
+    )
+  })
+  if (path && path.length > 0) {
+    !includeMe && path && path.pop()
+  }
+  return path && path.length > 0 ? path.map((routeInfo) => routeInfo.key) : []
+}
+
+listenerRouteChange((route) => {
+  handleChangeRoute(route as RouteLocationNormalized)
+})
 </script>
 <style lang="less">
 @import '@/less/theme.less';

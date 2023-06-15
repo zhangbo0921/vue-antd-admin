@@ -1,11 +1,20 @@
 import { useAppStore, useUserStore } from '@/stores'
-import { Constants } from '@/types/constants'
-import store from 'store2'
-import { toRaw } from 'vue'
 import type { RouteLocationNormalized, RouteRecordRaw, Router } from 'vue-router'
+import { setRouteChange } from '@/utils/routeChange'
+import { RedirectName } from '@/types/constants'
 
 export const initRouteGuard = (router: Router) => {
   createPermissionGuard(router)
+  createPageGuard(router)
+}
+
+// 创建页面守卫
+export function createPageGuard(router: Router) {
+  router.beforeEach((to) => {
+    if (to.name === RedirectName) return true
+    setRouteChange(to)
+    return true
+  })
 }
 
 export const createPermissionGuard = (router: Router) => {
