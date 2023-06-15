@@ -3,9 +3,9 @@ import http from '@/utils/http/request'
 import type { LoginParams, Token } from '../model/system'
 
 enum Api {
-  Login = '/api/auth/auth/login',
-  Logout = '/api/auth/auth/logout',
-  GetRoutes = '/api/system/auth/getRoutes'
+  Login = '/mock/auth/auth/login',
+  Logout = '/mock/auth/auth/logout',
+  GetRoutes = '/mock/system/auth/getRoutes'
 }
 
 // 登录
