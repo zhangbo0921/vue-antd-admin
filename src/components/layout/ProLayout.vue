@@ -27,6 +27,7 @@
             :theme="headerTheme"
             :data="menuInfo"
             :openKeys="menuState.openKeys"
+            :selectedKeys="menuState.selectKeys"
           />
         </div>
       </div>
@@ -63,6 +64,7 @@
           :theme="siderTheme"
           :data="menuInfo"
           :openKeys="menuState.openKeys"
+          :selectedKeys="menuState.selectKeys"
         />
       </div>
     </a-layout-sider>
@@ -91,6 +93,7 @@
           :theme="siderTheme"
           :data="menuInfo"
           :openKeys="menuState.openKeys"
+          :selectedKeys="menuState.selectKeys"
         />
       </a-layout-sider>
       <a-layout-sider
@@ -204,6 +207,7 @@ import { useUserStore } from '@/stores/index'
 import settings from '@/config/setting'
 import { listenerRouteChange } from '@/utils/routeChange'
 import type { RouteLocationNormalized } from 'vue-router'
+import { findPath } from '@/utils/treeUtils'
 
 // 内容全屏
 const isContentFullscreen = ref(false)
@@ -275,19 +279,19 @@ const menuState = ref({
 })
 
 const handleChangeRoute = (route: RouteLocationNormalized) => {
-  console.log(getMenuOpenKeys(route))
+  menuState.value.openKeys = getMenuOpenKeys(route) as []
+  menuState.value.selectKeys = getMenuOpenKeys(route, true) as []
 }
 
 const getMenuOpenKeys = (route: RouteLocationNormalized, includeMe = false) => {
-  const path = userStore.getShowMenu().filter((item) => {
-    debugger
+  const path: MenuInfo[] = findPath<MenuInfo>(menuInfo, (item) => {
     return (
       item.path === route.path ||
       item.path === route.fullPath ||
       item.redirect === route.fullPath ||
       item.redirect === route.path
     )
-  })
+  }) as MenuInfo[]
   if (path && path.length > 0) {
     !includeMe && path && path.pop()
   }
