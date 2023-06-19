@@ -116,3 +116,38 @@ export interface R<T> {
   msg: string
   data: T
 }
+
+export interface TabState {
+  // 需要缓存的Tab列表
+  cacheTabList: Set<string>
+  // 已经打开的tab列表，RouteLocationNormalized是路由的接口
+  tabList: TabInfo[]
+  // 缓存页面
+  cachePageList: CachePage[]
+}
+
+// tab信息
+export interface TabInfo {
+  // 路径
+  path: string
+  // 标题
+  title: string
+  // 全路径
+  fullPath?: string
+  // 组件名称
+  name?: string
+  // 是否可以关闭
+  enableClose: boolean
+  // route 参数
+  params?: RouteParams
+  // route 查询阐述
+  query?: LocationQuery
+  // route meta 属性
+  meta?: RouteMeta
+}
+
+// 缓存页面
+export type CachePage = {
+  fullPath: string
+  data: unknown
+}

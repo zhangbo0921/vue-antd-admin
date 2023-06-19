@@ -202,12 +202,16 @@ import { computed, ref, watchEffect } from 'vue'
 import SimpleMenu from '@/components/menu/SimpleMenu.vue'
 import Logo from '@/components/header/Logo.vue'
 import HeaderItem from '@/components/header/HeaderItem.vue'
-import type { MenuInfo } from '@/types/types'
+import type { MenuInfo, TabInfo } from '@/types/types'
 import { useUserStore } from '@/stores/index'
 import settings from '@/config/setting'
 import { listenerRouteChange } from '@/utils/routeChange'
 import type { RouteLocationNormalized } from 'vue-router'
 import { findPath } from '@/utils/treeUtils'
+import { useTabStore } from '@/stores/modules/tabStore'
+
+const userStore = useUserStore()
+const tabStore = useTabStore()
 
 // 内容全屏
 const isContentFullscreen = ref(false)
@@ -269,8 +273,6 @@ watchEffect(() => {
   }
 })
 
-const userStore = useUserStore()
-
 const menuInfo: MenuInfo[] = userStore.getShowMenu()
 
 const menuState = ref({
@@ -281,6 +283,12 @@ const menuState = ref({
 const handleChangeRoute = (route: RouteLocationNormalized) => {
   menuState.value.openKeys = getMenuOpenKeys(route) as []
   menuState.value.selectKeys = getMenuOpenKeys(route, true) as []
+  if (settings.enableMultiTab) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { matched, redirectedFrom, hash, ...opt } = route as RouteLocationNormalized
+    console.log(opt)
+    tabStore.addTabAction({ ...opt, enableClose: true } as TabInfo)
+  }
 }
 
 const getMenuOpenKeys = (route: RouteLocationNormalized, includeMe = false) => {
