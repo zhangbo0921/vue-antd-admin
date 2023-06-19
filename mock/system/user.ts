@@ -1,6 +1,6 @@
 export default [
   {
-    url: '/mock/auth/auth/login',
+    url: '/api/auth/auth/login',
     method: 'post',
     response: () => {
       return {
@@ -16,7 +16,7 @@ export default [
     }
   },
   {
-    url: '/mock/system/auth/getRoutes',
+    url: '/api/system/auth/getRoutes',
     method: 'post',
     response: () => {
       return {
