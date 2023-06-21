@@ -78,7 +78,7 @@ export const tabStore = defineStore('tabStore', {
         // 更新已经打开的tab信息
         this.updateCacheTabAction()
         // 如果打开的tab总数大于0 并且 关闭的是当前路由页面，需要判断下一个打开的路由是
-        if (this.tabList.length > 0 && router.currentRoute.value.path === fullPath) {
+        if (this.tabList.length > 0 && router.currentRoute.value.fullPath === fullPath) {
           // 因为上面已经删除了数据，所以：
           // tabIndex 现在是要关闭的tab右侧的
           // tabIndex - 1 是要关闭的tab左侧的
@@ -87,9 +87,9 @@ export const tabStore = defineStore('tabStore', {
           // 因为上面有关闭保护，也就是tabList.length 必须大于1，才能关闭.
           // 所以tabIndex 和 tabIndex - 1 肯定有一个有值
           if (this.tabList[tabIndex - 1]) {
-            router.push(this.tabList[tabIndex - 1].path)
+            router.push(this.tabList[tabIndex - 1].fullPath as string)
           } else {
-            router.push(this.tabList[tabIndex].path)
+            router.push(this.tabList[tabIndex].fullPath as string)
           }
         }
       }
