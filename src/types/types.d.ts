@@ -130,8 +130,6 @@ export interface TabState {
 export interface TabInfo {
   // 路径
   path: string
-  // 标题
-  title: string
   // 全路径
   fullPath?: string
   // 组件名称

@@ -1,7 +1,7 @@
 <template>
   <ADropdown :trigger="!isExtra ? ['contextmenu'] : ['hover']">
     <div v-if="!isExtra">
-      {{ getTabInfo.query.title ? getTabInfo.query.title : getTabInfo.title }}
+      {{ getTabInfo.query.title ? getTabInfo.query.title : getTabInfo.meta.title }}
       <Icon
         v-if="showReLoad && tabinfo.fullPath === route.fullPath"
         @click.stop="handleReload"
@@ -10,7 +10,7 @@
         style="font-size: 12px; margin: 0 4px 0 4px"
       ></Icon>
       <Icon
-        v-if="tabinfo.enableClose"
+        v-if="tabinfo.enableClose && tabStore.tabList.length > 1"
         icon="close-outlined"
         style="font-size: 12px; margin: 0 0px 0 4px"
         class="multi-tab-close-btn multi-tab-btn"
@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import type { TabInfo } from '@/types/types'
 import Icon from '@/components/icon/Icon.vue'
-import { useRoute, type RouteLocationNormalized, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAppStore, useTabStore } from '@/stores'
 import { computed, unref } from 'vue'
 

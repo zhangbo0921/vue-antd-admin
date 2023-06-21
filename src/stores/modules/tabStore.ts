@@ -42,8 +42,8 @@ export const tabStore = defineStore('tabStore', {
           return
         }
         // 如果title 没有赋值，则给meta.title的值
-        if (!tabinfo.title) {
-          tabinfo.title = tabinfo.query.title
+        if (!tabinfo.meta.title) {
+          tabinfo.meta.title = tabinfo.query.title
             ? tabinfo.query.title
             : (tabinfo.meta?.title as string)
         }
@@ -55,11 +55,11 @@ export const tabStore = defineStore('tabStore', {
         if (tabinfo.path === appStore.homePath) {
           tabinfo.enableClose = false
         }
-        setDocumentTitle(
-          tabinfo.query.title ? tabinfo.query.title : tabinfo.title + '-' + appStore.title
-        )
         this.tabList.push(tabinfo)
       }
+      setDocumentTitle(
+        tabinfo.query.title ? tabinfo.query.title : tabinfo.meta.title + '-' + appStore.title
+      )
     },
     // 关闭tab标签
     closeTab(fullPath: string, router: Router) {
@@ -201,14 +201,14 @@ export const tabStore = defineStore('tabStore', {
       const findIndex = this.tabList.findIndex((item) => item.path === tabInfo.path)
       if (findIndex) {
         // 更新title
-        this.tabList[findIndex].title = tabInfo.title
+        this.tabList[findIndex].meta.title = tabInfo.meta.title
         // 更新是否可以关闭
         this.tabList[findIndex].enableClose = tabInfo.enableClose
         // 更新浏览器标题
         setDocumentTitle(
           this.tabList[findIndex].query.title
             ? this.tabList[findIndex].query.title
-            : this.tabList[findIndex].title + '-' + appStore.title
+            : this.tabList[findIndex].meta.title + '-' + appStore.title
         )
       }
     },

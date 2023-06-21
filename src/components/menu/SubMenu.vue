@@ -13,7 +13,6 @@
           <template #icon v-if="item.meta?.icon">
             <Icon :icon="(item.meta?.icon as string)" />
           </template>
-
           <RouterLink v-if="!isUrl(item.path)" :to="item.path"> {{ item.meta?.title }}</RouterLink>
           <a :href="item.path" target="_blank" v-else> {{ item.meta?.title }}</a>
         </a-menu-item>
