@@ -1,16 +1,21 @@
 import { Layout } from '@/types/constants'
 import type { MenuInfo } from '@/types/types'
+import { isUrl } from './is'
 
 declare type Recordable<T = any> = Record<string, T>
 declare type ViewType = Record<string, () => Promise<Recordable>>
 
 const ProLayout = () => import('@/components/layout/ProLayout.vue')
 const RouteView = () => import('@/components/layout/RouteView.vue')
+const FrameView = () => import('@/components/frame/FrameView.vue')
 
 export const asyncImportRoute = (menus: MenuInfo[]) => {
   const views: ViewType = import.meta.glob('../views/**/*.vue')
   if (!menus) return
   menus.forEach((menu) => {
+    if (menu.meta?.frameSrc && isUrl(menu.meta?.frameSrc)) {
+      menu.component = 'FrameView'
+    }
     const { component, children } = menu
     if (component) {
       const layout = importLayout(component)
@@ -30,6 +35,9 @@ const importLayout = (component: string) => {
   }
   if (component === Layout.RouteView) {
     return RouteView
+  }
+  if (component === Layout.FrameView) {
+    return FrameView
   }
 }
 const importView = (views: ViewType, component: string) => {

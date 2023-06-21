@@ -59,6 +59,24 @@ export default [
                 path: '/dashboard/settings',
                 pid: 1,
                 redirect: ''
+              },
+              {
+                component: 'FrameView',
+                key: 4,
+                meta: {
+                  activePath: '',
+                  frameSrc: 'https://www.taobao.com',
+                  hideChildren: false,
+                  hideMenu: false,
+                  icon: 'taobao-circle-outlined',
+                  ignoreRoute: false,
+                  realPath: '',
+                  title: '淘宝'
+                },
+                name: 'taobao',
+                path: '/dashboard/taobao',
+                pid: 1,
+                redirect: ''
               }
             ],
             component: 'ProLayout',
