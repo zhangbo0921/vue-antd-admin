@@ -132,6 +132,7 @@
         >
         </a-layout-header>
         <div class="unvue-content">
+          <div v-if="isEnableMultiTab && isFixedMultiTab" class="mutiple-tab-height"></div>
           <MultipleTab
             v-if="isEnableMultiTab"
             :class="{ 'pro-fixed-multiple-tab': isFixedMultiTab }"

@@ -25,3 +25,9 @@ if (isKeepAlive) {
 const frameTabList = computed(() => tabStore.getFrameTabsAction())
 console.log(tabStore.getFrameTabsAction())
 </script>
+
+<style lang="less">
+.page-layout {
+  padding: 8px;
+}
+</style>
