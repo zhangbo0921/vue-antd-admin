@@ -72,7 +72,6 @@ export const userStore = defineStore('userStore', {
       if (!this.userInfo.homePath) {
         this.userInfo.homePath = settings.homePath
       }
-      console.log('用户信息', toRaw(this.userInfo))
     },
     async getMenu() {
       console.debug('localRoutes:', settings.localRoutes)

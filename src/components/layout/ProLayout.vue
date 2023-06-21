@@ -313,8 +313,6 @@ watchEffect(() => {
 const menuInfo: MenuInfo[] = userStore.getShowMenu()
 
 const handleChangeRoute = (route: RouteLocationNormalized) => {
-  console.log(!isSiderCollapsed.value)
-  console.log(!isTop.value)
   // 如果菜单折叠了，就不要出发openKeys了
   if (!isSiderCollapsed.value) {
     menuState.value.openKeys = getMenuOpenKeys(route) as []

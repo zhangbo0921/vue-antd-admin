@@ -34,7 +34,6 @@ http.interceptors.response.use(
 
     // 访问成功，返回数据
     if (code === 200) {
-      console.log('返回数据：', response.data)
       return response.data
     }
 

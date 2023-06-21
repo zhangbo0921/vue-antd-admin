@@ -23,7 +23,6 @@ if (isKeepAlive) {
   cacheTabList = computed(() => tabStore.cachedTabList)
 }
 const frameTabList = computed(() => tabStore.getFrameTabsAction())
-console.log(tabStore.getFrameTabsAction())
 </script>
 
 <style lang="less">
