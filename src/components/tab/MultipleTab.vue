@@ -7,7 +7,6 @@
       size="small"
       :animated="false"
       :tabBarGutter="3"
-      @edit="handleDeleteTab"
       @change="handleChange"
     >
       <ATabPane
@@ -21,7 +20,7 @@
         </template>
       </ATabPane>
       <template #rightExtra>
-        <TabContent :tabinfo="$route" :index="1" :isExtra="true">
+        <TabContent :tabinfo="currentRoute" :index="1" :isExtra="true">
           <Icon icon="more-outlined" style="font-size: 12px" class="ant-tabs-extra-more-btn" />
         </TabContent>
       </template>
@@ -29,14 +28,17 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useTabStore } from '@/stores'
 import { computed, ref } from 'vue'
 import TabContent from '@/components/tab/TabContent.vue'
 import Icon from '@/components/icon/Icon.vue'
 import { listenerRouteChange } from '@/utils/routeChange'
+import type { TabInfo } from '@/types/types'
 
 const router = useRouter()
+const route = useRoute()
+const currentRoute = route as unknown as TabInfo
 const tabStore = useTabStore()
 
 const activeKey = ref('')
@@ -44,12 +46,6 @@ const activeKey = ref('')
 // 初始化
 const tabList = computed(() => tabStore.tabList)
 
-// 处理删除事件
-const handleDeleteTab = (targetKey: any, action: any) => {
-  if (action === 'remove') {
-    tabStore.closeTab(targetKey, router)
-  }
-}
 // 处理tab改变事件
 const handleChange = (targetKey: any) => {
   router.push(targetKey as string)
