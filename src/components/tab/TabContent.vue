@@ -55,7 +55,6 @@ const handleReload = () => {
   tabStore.refreshPage(unref(getTabInfo))
 }
 const handleClose = () => {
-  console.log('close', props.tabinfo.fullPath)
   tabStore.closeTab(props.tabinfo.fullPath as string, router)
 }
 </script>
