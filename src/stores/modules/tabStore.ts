@@ -11,17 +11,10 @@ import { unref } from 'vue'
 export const tabStore = defineStore('tabStore', {
   state: (): TabState => {
     return {
-      // 需要缓存的Tab列表
-      cacheTabList: new Set(),
       // 已经打开的tab列表，RouteLocationNormalized是路由的接口
       tabList: new Array<TabInfo>(),
       // 缓存页面
       cachePageList: new Array<CachePage>()
-    }
-  },
-  getters: {
-    cachedTabList(): string[] {
-      return Array.from(this.cacheTabList)
     }
   },
   actions: {
@@ -75,8 +68,6 @@ export const tabStore = defineStore('tabStore', {
         this.removePageAction(fullPath)
         // 删除要删除的tab
         this.tabList.splice(tabIndex, 1)
-        // 更新已经打开的tab信息
-        this.updateCacheTabAction()
         // 如果打开的tab总数大于0 并且 关闭的是当前路由页面，需要判断下一个打开的路由是
         if (this.tabList.length > 0 && router.currentRoute.value.fullPath === fullPath) {
           // 因为上面已经删除了数据，所以：
@@ -94,12 +85,11 @@ export const tabStore = defineStore('tabStore', {
         }
       }
     },
-
     // 关闭当前路由
     closeCurrentTab(router: Router) {
       this.closeTab(router.currentRoute.value.fullPath, router)
     },
-
+    // 关闭左侧路由
     closeLeftTab(tabinfo: TabInfo) {
       const tabIndex = this.tabList.findIndex((tab) => {
         if (tab.fullPath === tabinfo.fullPath) return true
@@ -154,8 +144,6 @@ export const tabStore = defineStore('tabStore', {
         this.tabList = this.tabList.filter(
           (tab) => !(bulk.includes(tab.fullPath as string) || bulk.includes(tab.path as string))
         )
-        // 更新缓存
-        this.updateCacheTabAction()
         this.bulkDeletePageData(bulk as string[])
       }
     },
@@ -171,28 +159,6 @@ export const tabStore = defineStore('tabStore', {
       if (index > -1) {
         this.cachePageList.splice(index, 1)
       }
-    },
-
-    // 更新需要缓存的列表信息
-    updateCacheTabAction() {
-      const appStore = useAppStore()
-      const cacheTabMap: Set<string> = new Set()
-      // 遍历tabList，找出需要缓存的tab
-      for (const tab of this.tabList) {
-        const item = tab
-        // 判断是否需要缓存
-        if (item && item.meta && item?.meta.keepAlive) {
-          // 如果需要缓存，判断使用keepAlive 还是 内存缓存
-          // keepAlive需要组件名称
-          // 内存缓存需要fullPath
-          if (appStore.cacheType === 'keepAlive') {
-            cacheTabMap.add(item.name as string)
-          } else {
-            cacheTabMap.add(item.fullPath as string)
-          }
-        }
-      }
-      this.cacheTabList = cacheTabMap
     },
     // 更新tab信息
     updateTabinfo(tabInfo: TabInfo) {
@@ -221,13 +187,7 @@ export const tabStore = defineStore('tabStore', {
       if (name === RedirectName) {
         return
       }
-
-      // 删除缓存
-      if (appStore.isKeepAlive) {
-        this.cacheTabList.delete(String(name))
-      } else {
-        this.removePageAction(fullPath)
-      }
+      this.removePageAction(fullPath)
       params['path'] = path
       replace({ name: RedirectName, params, query })
     },
@@ -248,6 +208,19 @@ export const tabStore = defineStore('tabStore', {
           }
         })
       return tabList
+    },
+    // 获取缓存页面信息
+    getCachedData(fullPath: string) {
+      return this.cachePageList.find((item) => item.fullPath === fullPath)?.data
+    },
+    // 添加缓存页面
+    addCachedData(page: CachePage) {
+      const index = this.cachePageList.findIndex((item) => item.fullPath === page.fullPath)
+      if (index > -1) {
+        this.cachePageList.splice(index, 1, page)
+      } else {
+        this.cachePageList.push(page)
+      }
     },
     clear() {
       this.$reset()

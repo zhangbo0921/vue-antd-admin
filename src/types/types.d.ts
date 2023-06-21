@@ -118,8 +118,6 @@ export interface R<T> {
 }
 
 export interface TabState {
-  // 需要缓存的Tab列表
-  cacheTabList: Set<string>
   // 已经打开的tab列表，RouteLocationNormalized是路由的接口
   tabList: TabInfo[]
   // 缓存页面
