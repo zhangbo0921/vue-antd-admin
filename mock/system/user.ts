@@ -23,6 +23,22 @@ export default [
         code: 200,
         data: [
           {
+            component: 'ProLayout',
+            key: 1,
+            meta: {
+              activePath: '',
+              frameSrc: '',
+              hideChildren: false,
+              hideMenu: false,
+              icon: 'dashboard-outlined',
+              ignoreRoute: false,
+              realPath: '',
+              title: '仪表盘'
+            },
+            name: 'dashboard',
+            path: '/dashboard',
+            pid: 0,
+            redirect: '',
             children: [
               {
                 component: '/welcome/Dashboard',
@@ -78,9 +94,11 @@ export default [
                 pid: 1,
                 redirect: ''
               }
-            ],
+            ]
+          },
+          {
             component: 'ProLayout',
-            key: 1,
+            key: 11,
             meta: {
               activePath: '',
               frameSrc: '',
@@ -89,12 +107,32 @@ export default [
               icon: 'dashboard-outlined',
               ignoreRoute: false,
               realPath: '',
-              title: '仪表盘'
+              title: '系统管理'
             },
-            name: 'dashboard',
-            path: '/dashboard',
+            name: 'system',
+            path: '/system',
             pid: 0,
-            redirect: ''
+            redirect: '',
+            children: [
+              {
+                component: '/system/user/UserListView',
+                key: 12,
+                meta: {
+                  activePath: '',
+                  frameSrc: '',
+                  hideChildren: false,
+                  hideMenu: false,
+                  icon: 'container-outlined',
+                  ignoreRoute: false,
+                  realPath: '',
+                  title: '用户管理'
+                },
+                name: 'usermgr',
+                path: '/system/user-list',
+                pid: 1,
+                redirect: ''
+              }
+            ]
           }
         ],
         msg: '操作成功'
