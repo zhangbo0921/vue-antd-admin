@@ -151,3 +151,11 @@ export type CachePage = {
   fullPath: string
   data: unknown
 }
+
+// IFrame信息
+export interface FrameInfo {
+  // fullPath
+  fullPath: string
+  // iframe 的 src
+  frameSrc: string
+}

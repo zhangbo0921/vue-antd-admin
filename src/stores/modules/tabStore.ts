@@ -1,12 +1,14 @@
-import type { CachePage, TabInfo, TabState } from '@/types/types'
+import type { CachePage, FrameInfo, TabInfo, TabState } from '@/types/types'
 import { defineStore } from 'pinia'
 import { useAppStore } from '..'
 import { setDocumentTitle } from '@/utils/domUtils'
 import { router } from '@/router'
 import type { Router } from 'vue-router'
 import { useGo } from '@/hooks/useGo'
+import { RedirectName } from '@/types/constants'
+import { unref } from 'vue'
 
-export const useTabStore = defineStore('tabStore', {
+export const tabStore = defineStore('tabStore', {
   state: (): TabState => {
     return {
       // 需要缓存的Tab列表
@@ -17,6 +19,11 @@ export const useTabStore = defineStore('tabStore', {
       cachePageList: new Array<CachePage>()
     }
   },
+  getters: {
+    cachedTabList(): string[] {
+      return Array.from(this.cacheTabList)
+    }
+  },
   actions: {
     // 添加tab标签
     addTabAction(tabinfo: TabInfo) {
@@ -25,7 +32,7 @@ export const useTabStore = defineStore('tabStore', {
 
       // 当前路由是否已经打开过
       const tabHasExits = this.tabList.some((tab) => {
-        return (tab.fullPath || tab.path) === (fullPath || path)
+        return tab.fullPath === fullPath
       })
 
       // 没有打开过,直接打开
@@ -36,7 +43,9 @@ export const useTabStore = defineStore('tabStore', {
         }
         // 如果title 没有赋值，则给meta.title的值
         if (!tabinfo.title) {
-          tabinfo.title = tabinfo.meta?.title as string
+          tabinfo.title = tabinfo.query.title
+            ? tabinfo.query.title
+            : (tabinfo.meta?.title as string)
         }
         // 如果fullpath 没有赋值，则给path的值
         if (!fullPath) {
@@ -53,23 +62,23 @@ export const useTabStore = defineStore('tabStore', {
       }
     },
     // 关闭tab标签
-    closeTab(path: string, router: Router) {
+    closeTab(fullPath: string, router: Router) {
       // tabList长度==1 不能删除
       if (this.tabList.length === 1) {
         return
       }
       // 查找要关闭的tab的索引
-      const tabIndex = this.tabList.findIndex((tab) => tab.path === path)
+      const tabIndex = this.tabList.findIndex((tab) => tab.fullPath === fullPath)
       // 没找到，直接跳过，找到了进入
       if (tabIndex !== -1) {
         //删除cachePage缓存
-        this.removePageAction(path)
+        this.removePageAction(fullPath)
         // 删除要删除的tab
         this.tabList.splice(tabIndex, 1)
         // 更新已经打开的tab信息
         this.updateCacheTabAction()
         // 如果打开的tab总数大于0 并且 关闭的是当前路由页面，需要判断下一个打开的路由是
-        if (this.tabList.length > 0 && router.currentRoute.value.path === path) {
+        if (this.tabList.length > 0 && router.currentRoute.value.path === fullPath) {
           // 因为上面已经删除了数据，所以：
           // tabIndex 现在是要关闭的tab右侧的
           // tabIndex - 1 是要关闭的tab左侧的
@@ -202,6 +211,50 @@ export const useTabStore = defineStore('tabStore', {
             : this.tabList[findIndex].title + '-' + appStore.title
         )
       }
+    },
+
+    refreshPage(tabInfo: TabInfo) {
+      const { replace } = router
+      const { name, params = {}, query = {}, fullPath = '' } = unref(tabInfo)
+      const appStore = useAppStore()
+
+      if (name === RedirectName) {
+        return
+      }
+
+      // 删除缓存
+      if (appStore.isKeepAlive) {
+        this.cacheTabList.delete(String(name))
+      } else {
+        this.removePageAction(fullPath)
+      }
+
+      if (name && Object.keys(params).length > 0) {
+        params['_redirect_type'] = 'name'
+        params['path'] = String(name)
+      } else {
+        params['_redirect_type'] = 'path'
+        params['path'] = fullPath
+      }
+      replace({ name: RedirectName, params, query })
+    },
+    // 获取需要IFrame显示的tab信息，直接上使用Frame渲染
+    getFrameTabsAction(): FrameInfo[] {
+      const tabList = this.tabList
+        .filter((item: TabInfo) => {
+          // item.meta.frameSrc有值，就是需要在IFrame里显示的菜单
+          if (item.meta && item.meta.frameSrc) {
+            return true
+          }
+          return false
+        })
+        ?.map((item: TabInfo): FrameInfo => {
+          return {
+            fullPath: item.fullPath as string,
+            frameSrc: item.meta?.frameSrc as string
+          }
+        })
+      return tabList
     },
     clear() {
       this.$reset()

@@ -84,7 +84,6 @@ export const createPermissionGuard = (router: Router) => {
       next({
         path: to.path,
         query: to.query,
-        params: to.params,
         replace: true
       })
       return

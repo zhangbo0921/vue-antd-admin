@@ -1,4 +1,4 @@
-import { useTabStore } from '@/stores/modules/tabStore'
+import { useTabStore } from '@/stores'
 import type { TabInfo } from '@/types/types'
 import { useRouter, type Router } from 'vue-router'
 

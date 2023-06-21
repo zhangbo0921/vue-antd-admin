@@ -27,7 +27,7 @@
             :theme="headerTheme"
             :data="menuInfo"
             :openKeys="menuState.openKeys"
-            :selectedKeys="menuState.selectKeys"
+            v-model:selectedKeys="menuState.selectKeys"
           />
         </div>
       </div>
@@ -64,7 +64,7 @@
           :theme="siderTheme"
           :data="menuInfo"
           :openKeys="menuState.openKeys"
-          :selectedKeys="menuState.selectKeys"
+          v-model:selectedKeys="menuState.selectKeys"
         />
       </div>
     </a-layout-sider>
@@ -93,7 +93,7 @@
           :theme="siderTheme"
           :data="menuInfo"
           :openKeys="menuState.openKeys"
-          :selectedKeys="menuState.selectKeys"
+          v-model:selectedKeys="menuState.selectKeys"
         />
       </a-layout-sider>
       <a-layout-sider
@@ -132,7 +132,12 @@
         >
         </a-layout-header>
         <div class="unvue-content">
-          <RouterView />
+          <MultipleTab
+            v-if="isEnableMultiTab"
+            :class="{ 'pro-fixed-multiple-tab': isFixedMultiTab }"
+          >
+          </MultipleTab>
+          <PageView></PageView>
         </div>
       </a-layout-content>
     </a-layout>
@@ -164,6 +169,18 @@
         </a-radio-group>
         <br />
       </template>
+      Enable Tab
+      <a-radio-group v-model:value="isEnableMultiTab">
+        <a-radio-button :value="true">true</a-radio-button>
+        <a-radio-button :value="false">false</a-radio-button>
+      </a-radio-group>
+      <br />
+      Fixed Tab
+      <a-radio-group v-model:value="isFixedMultiTab" :disabled="!isEnableMultiTab">
+        <a-radio-button :value="true">true</a-radio-button>
+        <a-radio-button :value="false">false</a-radio-button>
+      </a-radio-group>
+      <br />
       Header Theme：
       <a-radio-group v-model:value="headerTheme">
         <a-radio-button value="light">light</a-radio-button>
@@ -203,12 +220,13 @@ import SimpleMenu from '@/components/menu/SimpleMenu.vue'
 import Logo from '@/components/header/Logo.vue'
 import HeaderItem from '@/components/header/HeaderItem.vue'
 import type { MenuInfo, TabInfo } from '@/types/types'
-import { useUserStore } from '@/stores/index'
+import { useTabStore, useUserStore } from '@/stores/index'
 import settings from '@/config/setting'
 import { listenerRouteChange } from '@/utils/routeChange'
 import type { RouteLocationNormalized } from 'vue-router'
 import { findPath } from '@/utils/treeUtils'
-import { useTabStore } from '@/stores/modules/tabStore'
+import MultipleTab from '@/components/tab/MultipleTab.vue'
+import PageView from '@/components/page/PageView.vue'
 
 const userStore = useUserStore()
 const tabStore = useTabStore()
@@ -252,6 +270,18 @@ const isSiderDark = computed(() => {
 
 const isEnableFixedSider = ref(true)
 
+// 是否启用tab页
+const isEnableMultiTab = ref(settings.enableMultiTab)
+// tab是否固定
+const isFixedMultiTab = ref(settings.fixedMultiTab)
+
+const menuState = ref({
+  openKeys: [],
+  selectKeys: []
+})
+
+const templateTopOpenKeys = ref([])
+
 watchEffect(() => {
   if (isSider.value) {
     if (isFixedHeader.value) {
@@ -271,22 +301,27 @@ watchEffect(() => {
       isFixedSider.value = false
     }
   }
+  if (isTop.value) {
+    templateTopOpenKeys.value = menuState.value.openKeys
+    menuState.value.openKeys = []
+  } else {
+    menuState.value.openKeys = templateTopOpenKeys.value
+  }
 })
 
 const menuInfo: MenuInfo[] = userStore.getShowMenu()
 
-const menuState = ref({
-  openKeys: [],
-  selectKeys: []
-})
-
 const handleChangeRoute = (route: RouteLocationNormalized) => {
-  menuState.value.openKeys = getMenuOpenKeys(route) as []
+  console.log(!isSiderCollapsed.value)
+  console.log(!isTop.value)
+  // 如果菜单折叠了，就不要出发openKeys了
+  if (!isSiderCollapsed.value) {
+    menuState.value.openKeys = getMenuOpenKeys(route) as []
+  }
   menuState.value.selectKeys = getMenuOpenKeys(route, true) as []
   if (settings.enableMultiTab) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { matched, redirectedFrom, hash, ...opt } = route as RouteLocationNormalized
-    console.log(opt)
     tabStore.addTabAction({ ...opt, enableClose: true } as TabInfo)
   }
 }
