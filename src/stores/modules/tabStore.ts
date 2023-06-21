@@ -215,7 +215,7 @@ export const tabStore = defineStore('tabStore', {
 
     refreshPage(tabInfo: TabInfo) {
       const { replace } = router
-      const { name, params = {}, query = {}, fullPath = '' } = unref(tabInfo)
+      const { name, params, query, path = '', fullPath = '' } = unref(tabInfo)
       const appStore = useAppStore()
 
       if (name === RedirectName) {
@@ -228,14 +228,7 @@ export const tabStore = defineStore('tabStore', {
       } else {
         this.removePageAction(fullPath)
       }
-
-      if (name && Object.keys(params).length > 0) {
-        params['_redirect_type'] = 'name'
-        params['path'] = String(name)
-      } else {
-        params['_redirect_type'] = 'path'
-        params['path'] = fullPath
-      }
+      params['path'] = path
       replace({ name: RedirectName, params, query })
     },
     // 获取需要IFrame显示的tab信息，直接上使用Frame渲染
