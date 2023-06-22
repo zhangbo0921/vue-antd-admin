@@ -65,7 +65,7 @@ export const tabStore = defineStore('tabStore', {
       // 没找到，直接跳过，找到了进入
       if (tabIndex !== -1) {
         //删除cachePage缓存
-        this.removePageAction(fullPath)
+        this.removeCachedPage(fullPath)
         // 删除要删除的tab
         this.tabList.splice(tabIndex, 1)
         // 如果打开的tab总数大于0 并且 关闭的是当前路由页面，需要判断下一个打开的路由是
@@ -144,20 +144,7 @@ export const tabStore = defineStore('tabStore', {
         this.tabList = this.tabList.filter(
           (tab) => !(bulk.includes(tab.fullPath as string) || bulk.includes(tab.path as string))
         )
-        this.bulkDeletePageData(bulk as string[])
-      }
-    },
-    // 批量删除页面-内存缓存
-    bulkDeletePageData(bulk: string[]) {
-      this.cachePageList = this.cachePageList.filter((cache) => !bulk.includes(cache.fullPath))
-    },
-
-    // 删除缓存页面
-    removePageAction(fullPath: string) {
-      const index = this.cachePageList.findIndex((item) => item.fullPath === fullPath)
-      // 找到页面，删除缓存
-      if (index > -1) {
-        this.cachePageList.splice(index, 1)
+        this.bulkRemoveCachedData(bulk as string[])
       }
     },
     // 更新tab信息
@@ -182,16 +169,15 @@ export const tabStore = defineStore('tabStore', {
     refreshPage(tabInfo: TabInfo) {
       const { replace } = router
       const { name, params, query, path = '', fullPath = '' } = unref(tabInfo)
-      const appStore = useAppStore()
 
       if (name === RedirectName) {
         return
       }
-      this.removePageAction(fullPath)
+      this.removeCachedPage(fullPath)
       params['path'] = path
       replace({ name: RedirectName, params, query })
     },
-    // 获取需要IFrame显示的tab信息，直接上使用Frame渲染
+    // 获取需要IFrame显示的tab信息，直接让使用Frame渲染
     getFrameTabsAction(): FrameInfo[] {
       const tabList = this.tabList
         .filter((item: TabInfo) => {
@@ -220,6 +206,18 @@ export const tabStore = defineStore('tabStore', {
         this.cachePageList.splice(index, 1, page)
       } else {
         this.cachePageList.push(page)
+      }
+    },
+    // 批量删除缓存页面
+    bulkRemoveCachedData(fullPaths: string[]) {
+      this.cachePageList = this.cachePageList.filter((cache) => !fullPaths.includes(cache.fullPath))
+    },
+    // 删除缓存
+    removeCachedPage(fullPath: string) {
+      const index = this.cachePageList.findIndex((item) => item.fullPath === fullPath)
+      // 找到页面，删除缓存
+      if (index > -1) {
+        this.cachePageList.splice(index, 1)
       }
     },
     clear() {
