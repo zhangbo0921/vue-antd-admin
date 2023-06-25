@@ -5,7 +5,7 @@
     </template>
     <template #title>{{ data.meta?.title }}</template>
     <template v-for="item in data.children" :key="item.key">
-      <template v-if="item.children">
+      <template v-if="item.children && item.children.length > 0">
         <SubMenu :data="item" :key="item.key"></SubMenu>
       </template>
       <template v-else>

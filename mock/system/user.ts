@@ -133,6 +133,44 @@ export default [
                 redirect: ''
               }
             ]
+          },
+          {
+            component: 'ProLayout',
+            key: 21,
+            meta: {
+              activePath: '',
+              frameSrc: '',
+              hideChildren: true,
+              hideMenu: false,
+              icon: 'dashboard-outlined',
+              ignoreRoute: false,
+              realPath: '',
+              title: '工单系统'
+            },
+            name: 'order',
+            path: '/order',
+            pid: 0,
+            redirect: '',
+            children: [
+              {
+                component: '/order/order/AddOrderView',
+                key: 22,
+                meta: {
+                  activePath: '',
+                  frameSrc: '',
+                  hideChildren: false,
+                  hideMenu: false,
+                  icon: 'container-outlined',
+                  ignoreRoute: false,
+                  realPath: '',
+                  title: '工单登记'
+                },
+                name: 'usermgr',
+                path: '/order/save',
+                pid: 1,
+                redirect: ''
+              }
+            ]
           }
         ],
         msg: '操作成功'

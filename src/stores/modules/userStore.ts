@@ -108,6 +108,11 @@ export const userStore = defineStore('userStore', {
         if (menu.path === '/' || menu.meta?.hideMenu) {
           return false
         } else {
+          if (menu.meta?.hideChildren) {
+            menu.children = []
+          } else if (menu.children && menu.children.length > 0) {
+            menu.children = this.filterMenus(menu.children)
+          }
           return true
         }
       })

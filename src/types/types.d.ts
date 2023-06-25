@@ -30,6 +30,8 @@ export interface Meta {
   icon?: string
   // 是否隐藏菜单，注意：隐藏菜单，不代表不添加路由
   hideMenu?: boolean
+  // 是否隐藏子菜单
+  hideChildren?: boolean
   // frame 地址
   frameSrc?: string
 }
