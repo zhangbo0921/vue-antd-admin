@@ -71,9 +71,12 @@ listenerRouteChange((route) => {
   &.pro-fixed-multiple-tab {
     position: fixed;
     z-index: 18;
-    width: 100%;
+    width: calc(100% - @layout-sider-width);
     top: @layout-header-height;
     border-top: 1px solid rgba(0, 21, 41, 0.08);
+  }
+  &.pro-fixed-multiple-tab-collapsed {
+    width: calc(100% - @layout-sider-collapsed-width);
   }
 }
 </style>

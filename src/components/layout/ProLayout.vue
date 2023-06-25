@@ -135,7 +135,10 @@
           <div v-if="isEnableMultiTab && isFixedMultiTab" class="mutiple-tab-height"></div>
           <MultipleTab
             v-if="isEnableMultiTab"
-            :class="{ 'pro-fixed-multiple-tab': isFixedMultiTab }"
+            :class="{
+              'pro-fixed-multiple-tab': isFixedMultiTab,
+              'pro-fixed-multiple-tab-collapsed': isSiderCollapsed
+            }"
           >
           </MultipleTab>
           <PageView></PageView>
