@@ -32,6 +32,8 @@ export interface Meta {
   hideMenu?: boolean
   // 是否隐藏子菜单
   hideChildren?: boolean
+  // 是否忽略此路由
+  ignoreRoute?: boolean
   // frame 地址
   frameSrc?: string
 }

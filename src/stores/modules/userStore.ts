@@ -77,12 +77,13 @@ export const userStore = defineStore('userStore', {
       console.debug('localRoutes:', settings.localRoutes)
       if (settings.localRoutes) {
         this.menus = [...baseRoutes, ...syncRoute]
-        this.addRoutes = syncRoute
+        this.addRoutes = this.filterRoute(syncRoute)
       } else {
         const syncMenu = (await getMenus()).data
-        asyncImportRoute(syncMenu)
+        const routes = this.filterRoute(syncMenu)
+        asyncImportRoute(routes)
         this.menus = [...baseRoutes, ...syncMenu]
-        this.addRoutes = syncMenu
+        this.addRoutes = routes
       }
     },
     getShowMenu(): MenuInfo[] {
@@ -112,6 +113,20 @@ export const userStore = defineStore('userStore', {
             menu.children = []
           } else if (menu.children && menu.children.length > 0) {
             menu.children = this.filterMenus(menu.children)
+          }
+          return true
+        }
+      })
+    },
+    // 过滤掉忽略的路由
+    filterRoute(menus: MenuInfo[]): MenuInfo[] {
+      return menus.filter((menu) => {
+        // 过滤掉根路径 & 过滤隐藏路由
+        if (menu.meta?.ignoreRoute) {
+          return false
+        } else {
+          if (menu.children && menu.children.length > 0) {
+            menu.children = this.filterRoute(menu.children)
           }
           return true
         }

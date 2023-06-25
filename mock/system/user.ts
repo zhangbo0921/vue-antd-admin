@@ -140,7 +140,7 @@ export default [
             meta: {
               activePath: '',
               frameSrc: '',
-              hideChildren: true,
+              hideChildren: false,
               hideMenu: false,
               icon: 'dashboard-outlined',
               ignoreRoute: false,
@@ -167,6 +167,42 @@ export default [
                 },
                 name: 'usermgr',
                 path: '/order/save',
+                pid: 1,
+                redirect: ''
+              },
+              {
+                component: '/order/order/AddOrderView',
+                key: 23,
+                meta: {
+                  activePath: '',
+                  frameSrc: '',
+                  hideChildren: false,
+                  hideMenu: true,
+                  icon: 'container-outlined',
+                  ignoreRoute: false,
+                  realPath: '',
+                  title: '工单编辑'
+                },
+                name: 'usermgr',
+                path: '/order/edit/:orderId',
+                pid: 1,
+                redirect: ''
+              },
+              {
+                component: '/order/order/AddOrderView',
+                key: 24,
+                meta: {
+                  activePath: '',
+                  frameSrc: '',
+                  hideChildren: false,
+                  hideMenu: true,
+                  icon: 'container-outlined',
+                  ignoreRoute: false,
+                  realPath: '',
+                  title: '工单编号10001'
+                },
+                name: 'usermgr',
+                path: '/order/edit/10001',
                 pid: 1,
                 redirect: ''
               }
