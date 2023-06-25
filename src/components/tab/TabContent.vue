@@ -20,7 +20,7 @@
     <div v-else>
       <Icon
         v-if="tabinfo.fullPath === route.fullPath"
-        class="ant-tabs-extra-more-btn"
+        class="ant-tabs-extra-more-btn multi-tab-btn"
         icon="more-outlined"
       ></Icon>
     </div>
@@ -92,6 +92,7 @@ const showCloseRight = computed(() => tabIndex.value + 1 < tabStore.tabList.leng
 <style lang="less">
 .multi-tab-btn {
   color: rgba(0, 0, 0, 0.65) !important;
+  cursor: pointer;
 }
 .multi-tab-btn:hover {
   color: unset !important;
