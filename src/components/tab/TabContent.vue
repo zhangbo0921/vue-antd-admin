@@ -24,6 +24,20 @@
         icon="more-outlined"
       ></Icon>
     </div>
+    <template #overlay>
+      <AMenu>
+        <AMenuItem key="close" @click="handleCloseOther" :disabled="!showCloseOther">
+          关闭其他
+        </AMenuItem>
+        <AMenuItem key="close-left" @click="handleCloseLeft" :disabled="!showCloseLeft">
+          关闭左侧
+        </AMenuItem>
+        <AMenuItem key="close-right" @click="handleCloseRight" :disabled="!showCloseRight">
+          关闭右侧
+        </AMenuItem>
+        <AMenuItem v-if="showReLoad" key="reload" @click="handleReload"> 刷新当前 </AMenuItem>
+      </AMenu>
+    </template>
   </ADropdown>
 </template>
 
@@ -43,6 +57,9 @@ const props = defineProps<{
   tabinfo: TabInfo
   isExtra?: boolean
 }>()
+const tabIndex = computed(() => {
+  return tabStore.tabList.findIndex((tab) => tab.fullPath === props.tabinfo.fullPath)
+})
 
 const getTabInfo = computed(() => {
   const [tab] = tabStore.tabList.filter((tab) => tab.fullPath === props.tabinfo.fullPath)
@@ -57,6 +74,19 @@ const handleReload = () => {
 const handleClose = () => {
   tabStore.closeTab(props.tabinfo.fullPath as string, router)
 }
+
+const handleCloseOther = () => {
+  tabStore.closeOtherTab(unref(getTabInfo))
+}
+const handleCloseRight = () => {
+  tabStore.closeRightTab(unref(getTabInfo))
+}
+const handleCloseLeft = () => {
+  tabStore.closeLeftTab(unref(getTabInfo))
+}
+const showCloseOther = computed(() => tabStore.tabList.length > 1)
+const showCloseLeft = computed(() => tabIndex.value > 0)
+const showCloseRight = computed(() => tabIndex.value + 1 < tabStore.tabList.length)
 </script>
 
 <style lang="less">
