@@ -224,60 +224,60 @@ import SimpleMenu from '@/components/menu/SimpleMenu.vue'
 import Logo from '@/components/header/Logo.vue'
 import HeaderItem from '@/components/header/HeaderItem.vue'
 import type { MenuInfo, TabInfo } from '@/types/types'
-import { useTabStore, useUserStore } from '@/stores/index'
-import settings from '@/config/setting'
+import { useAppStore, useTabStore, useUserStore } from '@/stores/index'
 import { listenerRouteChange } from '@/utils/routeChange'
 import type { RouteLocationNormalized } from 'vue-router'
 import { findPath } from '@/utils/treeUtils'
 import MultipleTab from '@/components/tab/MultipleTab.vue'
 import PageView from '@/components/page/PageView.vue'
+import { storeToRefs } from 'pinia'
 
 const userStore = useUserStore()
 const tabStore = useTabStore()
+const appStore = useAppStore()
 
 // 内容全屏
 const isContentFullscreen = ref(false)
 
-const title = ref(settings.title as string)
-const logoPath = ref(settings.logo)
+const title = ref(appStore.title as string)
+const logoPath = ref(appStore.logo)
 const isShowSetting = ref(false)
 // 布局：top/sider/mix
-const layout = ref(settings.layout)
-
+const { layout } = storeToRefs(appStore)
 const isMix = computed(() => {
-  return layout.value === 'mix'
+  return layout?.value === 'mix'
 })
 const isTop = computed(() => {
-  return layout.value === 'top'
+  return layout?.value === 'top'
 })
 const isSider = computed(() => {
-  return layout.value === 'sider'
+  return layout?.value === 'sider'
 })
 
-const isFixedHeader = ref(settings.fixHeader)
-const isFixedSider = ref(settings.fixSiderbar)
+const { fixHeader: isFixedHeader } = storeToRefs(appStore)
+const { fixSiderbar: isFixedSider } = storeToRefs(appStore)
 
 const isSiderCollapsed = ref(false)
-const siderCollapsedWidth = ref(settings.collapsedWidth)
+const { collapsedWidth: siderCollapsedWidth } = storeToRefs(appStore)
 
 // header主题：dark/light
-const headerTheme = ref(settings.headerTheme)
+const { headerTheme } = storeToRefs(appStore)
 const isHeaderLight = computed(() => {
-  return headerTheme.value == 'light'
+  return headerTheme?.value == 'light'
 })
 
 // sider主题：dark/light
-const siderTheme = ref(settings.siderbarTheme)
+const { siderbarTheme: siderTheme } = storeToRefs(appStore)
 const isSiderDark = computed(() => {
-  return siderTheme.value === 'dark'
+  return siderTheme?.value === 'dark'
 })
 
 const isEnableFixedSider = ref(true)
 
 // 是否启用tab页
-const isEnableMultiTab = ref(settings.enableMultiTab)
+const { enableMultiTab: isEnableMultiTab } = storeToRefs(appStore)
 // tab是否固定
-const isFixedMultiTab = ref(settings.fixedMultiTab)
+const { fixedMultiTab: isFixedMultiTab } = storeToRefs(appStore)
 
 const menuState = ref({
   openKeys: [],
@@ -288,7 +288,7 @@ const templateTopOpenKeys = ref([])
 
 watchEffect(() => {
   if (isSider.value) {
-    if (isFixedHeader.value) {
+    if (isFixedHeader?.value) {
       isFixedHeader.value = true
       isFixedSider.value = true
       isEnableFixedSider.value = false
@@ -297,7 +297,7 @@ watchEffect(() => {
     }
   }
   if (isMix.value) {
-    if (isFixedHeader.value) {
+    if (isFixedHeader?.value) {
       isFixedHeader.value = true
       isFixedSider.value = true
       isEnableFixedSider.value = false
@@ -316,12 +316,12 @@ watchEffect(() => {
 const menuInfo: MenuInfo[] = userStore.getShowMenu()
 
 const handleChangeRoute = (route: RouteLocationNormalized) => {
-  // 如果菜单折叠了，就不要出发openKeys了
+  // 如果菜单折叠了，就不要触发openKeys了
   if (!isSiderCollapsed.value) {
     menuState.value.openKeys = getMenuOpenKeys(route) as []
   }
   menuState.value.selectKeys = getMenuOpenKeys(route, true) as []
-  if (settings.enableMultiTab) {
+  if (appStore.enableMultiTab) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { matched, redirectedFrom, hash, ...opt } = route as RouteLocationNormalized
     tabStore.addTabAction({ ...opt, enableClose: true } as TabInfo)
@@ -329,7 +329,10 @@ const handleChangeRoute = (route: RouteLocationNormalized) => {
 }
 
 const getMenuOpenKeys = (route: RouteLocationNormalized, includeMe = false) => {
-  const path: MenuInfo[] = findPath<MenuInfo>(menuInfo, (item) => {
+  if (route.meta.hideMenu && route.meta.activePath) {
+    route.path = route.meta.activePath as string
+  }
+  const path: MenuInfo[] = findPath<MenuInfo>(userStore.getAllMenu(), (item) => {
     return (
       item.path === route.path ||
       item.path === route.fullPath ||

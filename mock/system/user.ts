@@ -165,7 +165,7 @@ export default [
                   realPath: '',
                   title: '工单登记'
                 },
-                name: 'usermgr',
+                name: 'orderAdd',
                 path: '/order/save',
                 pid: 1,
                 redirect: ''
@@ -183,7 +183,7 @@ export default [
                   realPath: '',
                   title: '工单编辑'
                 },
-                name: 'usermgr',
+                name: 'orderEdit',
                 path: '/order/edit/:orderId',
                 pid: 1,
                 redirect: ''
@@ -192,7 +192,7 @@ export default [
                 component: '/order/order/AddOrderView',
                 key: 24,
                 meta: {
-                  activePath: '',
+                  activePath: '/system/user-list',
                   frameSrc: '',
                   hideChildren: false,
                   hideMenu: true,
@@ -201,7 +201,7 @@ export default [
                   realPath: '',
                   title: '工单编号10001'
                 },
-                name: 'usermgr',
+                name: 'orderEdit10001',
                 path: '/order/edit/10001',
                 pid: 1,
                 redirect: ''

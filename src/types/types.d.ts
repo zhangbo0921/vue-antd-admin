@@ -24,6 +24,8 @@ export interface MenuInfo {
 export interface Meta {
   // 菜单名称
   title?: string
+  // 激活路径
+  activePath?: string
   // 是否缓存
   keepAlive?: boolean
   // 图标
@@ -50,7 +52,7 @@ export interface AppConfig {
   // 侧边菜单收缩时的宽度
   collapsedWidth: number
   // 是否固定侧边栏
-  fixSiderbar?: boolean
+  fixSiderbar: boolean
   // 侧边栏宽度
   siderbarWidth?: number
   // 侧边栏主题

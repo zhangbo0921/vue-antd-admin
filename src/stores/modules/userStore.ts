@@ -86,10 +86,12 @@ export const userStore = defineStore('userStore', {
         this.addRoutes = routes
       }
     },
+    getAllMenu() {
+      return this.menus
+    },
     getShowMenu(): MenuInfo[] {
       const menus = toRaw(this.menus)
       const showMenu = this.filterMenus(menus)
-      console.debug('showMenu', showMenu)
       return showMenu
     },
     getAddRoutes() {
@@ -104,7 +106,9 @@ export const userStore = defineStore('userStore', {
     logout() {},
     // 过滤跟路径和不显示菜单
     filterMenus(menus: MenuInfo[]): MenuInfo[] {
-      return menus.filter((menu) => {
+      const menuStr = JSON.stringify(menus)
+      const items: MenuInfo[] = JSON.parse(menuStr)
+      return items.filter((menu) => {
         // 过滤掉根路径 & 过滤隐藏路由
         if (menu.path === '/' || menu.meta?.hideMenu) {
           return false
@@ -120,7 +124,9 @@ export const userStore = defineStore('userStore', {
     },
     // 过滤掉忽略的路由
     filterRoute(menus: MenuInfo[]): MenuInfo[] {
-      return menus.filter((menu) => {
+      const menuStr = JSON.stringify(menus)
+      const items: MenuInfo[] = JSON.parse(menuStr)
+      return items.filter((menu) => {
         // 过滤掉根路径 & 过滤隐藏路由
         if (menu.meta?.ignoreRoute) {
           return false
