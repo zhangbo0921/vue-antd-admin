@@ -333,12 +333,7 @@ const getMenuOpenKeys = (route: RouteLocationNormalized, includeMe = false) => {
     route.path = route.meta.activePath as string
   }
   const path: MenuInfo[] = findPath<MenuInfo>(userStore.getAllMenu(), (item) => {
-    return (
-      item.path === route.path ||
-      item.path === route.fullPath ||
-      item.redirect === route.fullPath ||
-      item.redirect === route.path
-    )
+    return item.path === route.path || item.path === route.fullPath
   }) as MenuInfo[]
   if (path && path.length > 0) {
     !includeMe && path && path.pop()
