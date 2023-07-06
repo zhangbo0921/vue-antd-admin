@@ -17,7 +17,7 @@ const dashboardRoutes: MenuInfo = {
       meta: {
         title: '分析页'
       },
-      component: () => import('@/views/welcome/Dashboard.vue')
+      component: () => import('@/views/dashboard/Dashboard.vue')
     },
     {
       key: 'settings',
@@ -26,7 +26,7 @@ const dashboardRoutes: MenuInfo = {
       meta: {
         title: '系统设置'
       },
-      component: () => import('@/views/welcome/Settings.vue')
+      component: () => import('@/views/dashboard/Workspace.vue')
     }
   ]
 }

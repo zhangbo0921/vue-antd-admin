@@ -38,6 +38,8 @@ export interface Meta {
   ignoreRoute?: boolean
   // frame 地址
   frameSrc?: string
+  // 权限标识
+  perms?: string
 }
 
 // 配置接口

@@ -69,6 +69,7 @@ export const userStore = defineStore('userStore', {
     },
     getUserInfo() {
       this.userInfo = jwtDecode(store.get(Constants.AccessToken)) as UserInfo
+      console.debug(this.userInfo)
       if (!this.userInfo.homePath) {
         this.userInfo.homePath = settings.homePath
       }

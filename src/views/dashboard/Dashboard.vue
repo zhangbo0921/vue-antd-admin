@@ -170,5 +170,5 @@
   </div>
 </template>
 <script setup lang="ts">
-const title = 'dashboard page'
+const title = 'Analysis'
 </script>

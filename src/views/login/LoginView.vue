@@ -43,7 +43,7 @@ const loading = ref(false)
 
 const loginParam = ref<LoginParams>({
   username: 'admin',
-  password: 'zhangbo@123',
+  password: 'zhangbo123',
   device: 'PC'
 })
 
