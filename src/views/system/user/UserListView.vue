@@ -1,34 +1,49 @@
 <template>
-  <div class=".user-list">
-    <a-form
-      :model="data"
-      name="basic"
-      :label-col="{ span: 2 }"
-      :wrapper-col="{ span: 22 }"
-      autocomplete="off"
-    >
-      <a-form-item label="标题" name="title" :rules="[{ required: true, message: '请输入标题!' }]">
-        <a-input v-model:value="data.title" />
-      </a-form-item>
-      <a-form-item
-        label="诉求内容"
-        name="content"
-        :rules="[{ required: true, message: '请输入诉求内容!' }]"
-      >
-        <a-input v-model:value="data.content" />
-      </a-form-item>
-    </a-form>
+  <div class="user-list">
+    <TableList :columns="columns" :api="getUserList" rowKey="uid">
+      <template #bodyCell="{ text, record, column }">
+        <template v-if="column.dataIndex === 'status'">
+          <template v-if="record.status === 1"> <a-tag color="#2db7f5">启用</a-tag></template>
+          <template v-else><a-tag color="#f50">禁用</a-tag></template>
+        </template>
+      </template>
+    </TableList>
   </div>
 </template>
 <script setup lang="ts">
-import { useCached } from '@/hooks/useCached'
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-const route = useRoute()
+import { getUserList } from '@/api/system/user'
+import TableList from '@/components/table/TableList.vue'
 
-const data = ref({
-  title: '',
-  content: ''
-})
-useCached(route.fullPath, data)
+const columns = [
+  {
+    title: '序号',
+    dataIndex: 'index',
+    width: 50,
+    align: 'center'
+  },
+  {
+    title: '账号',
+    dataIndex: 'account',
+    sorter: false,
+    width: 150
+  },
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    sorter: false,
+    width: 150
+  },
+  {
+    title: '昵称',
+    dataIndex: 'nickName',
+    sorter: false,
+    width: 150
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    sorter: true,
+    width: 150
+  }
+]
 </script>

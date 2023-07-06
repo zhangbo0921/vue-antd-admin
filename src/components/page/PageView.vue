@@ -17,6 +17,6 @@ const frameTabList = computed(() => tabStore.getFrameTabsAction())
 
 <style lang="less">
 .page-layout {
-  padding: 8px;
+  padding: 4px;
 }
 </style>
