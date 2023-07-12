@@ -19,7 +19,6 @@ http.interceptors.request.use(
     return config
   },
   (error) => {
-    console.error(error)
     Promise.reject(error)
   }
 )
@@ -53,7 +52,6 @@ http.interceptors.response.use(
     }
   },
   (error) => {
-    console.error(error)
     Promise.reject(error)
   }
 )

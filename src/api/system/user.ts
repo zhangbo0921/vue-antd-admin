@@ -1,7 +1,7 @@
 import type { R } from '@/types/types'
 import http from '@/utils/http/request'
 
-interface UserInfo {
+export interface UserInfo {
   account: string
   avatar: string
   createTime: string

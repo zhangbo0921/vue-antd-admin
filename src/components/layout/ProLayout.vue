@@ -132,9 +132,12 @@
         >
         </a-layout-header>
         <div class="unvue-content">
-          <div v-if="isEnableMultiTab && isFixedMultiTab" class="mutiple-tab-height"></div>
+          <div
+            v-if="isEnableMultiTab && isFixedMultiTab && !isContentFullscreen"
+            class="mutiple-tab-height"
+          ></div>
           <MultipleTab
-            v-if="isEnableMultiTab"
+            v-if="isEnableMultiTab && !isContentFullscreen"
             :class="{
               'pro-fixed-multiple-tab': isFixedMultiTab,
               'pro-fixed-multiple-tab-collapsed': isSiderCollapsed

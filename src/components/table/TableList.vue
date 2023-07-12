@@ -10,6 +10,8 @@
         bordered
         :rowSelection="rowSelection"
         :pagination="pagination ? paginationConfig : false"
+        :loading="tableConfig.loading"
+        :scroll="tableScroll"
         @change="handleChange"
       >
         <template #bodyCell="{ text, record, index, column }">
@@ -23,8 +25,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { tryOnMounted, useThrottleFn } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { useAppStore } from '@/stores'
+import { tryOnMounted, useThrottleFn, useWindowSize } from '@vueuse/core'
+import { computed, ref, watch, watchEffect } from 'vue'
 
 interface TableProps {
   api: (params?: any) => Promise<any>
@@ -59,6 +62,9 @@ const props = withDefaults(defineProps<TableProps>(), {
 })
 
 const dataSource = ref([])
+const tableConfig = ref({
+  loading: false
+})
 
 tryOnMounted(() => {
   getTableList()
@@ -67,7 +73,7 @@ tryOnMounted(() => {
 // 分页
 const paginationConfig = ref({
   current: 1,
-  pageSize: 1,
+  pageSize: 15,
   total: 0,
   pageSizeOptions: ['15', '30', '50', '100', '200'],
   showSizeChanger: true,
@@ -92,10 +98,15 @@ const handleChange = (pagination: any) => {
 
 // 获取数据
 const getTableList = async () => {
-  const res = await props.api({ ...props.searchParams, ...pageParam.value })
-  dataSource.value = res.data.list
-  if (props.pagination) {
-    paginationConfig.value.total = res.data.total
+  tableConfig.value.loading = true
+  try {
+    const res = await props.api({ ...props.searchParams, ...pageParam.value })
+    dataSource.value = res.data.list
+    if (props.pagination) {
+      paginationConfig.value.total = res.data.total
+    }
+  } finally {
+    tableConfig.value.loading = false
   }
 }
 
@@ -132,6 +143,26 @@ const rowSelection = { fixed: true, selectedRowKeys, onChange }
  * 抖动
  */
 const getTableListThrottle = useThrottleFn(getTableList, props.throttle ? props.throttleSeconds : 0)
+
+// 表格高度
+const { height: windowHeight } = useWindowSize()
+const { headerHeight, fullScreen } = useAppStore()
+console.log('windowHeight', windowHeight.value)
+console.log('headerHeight', headerHeight)
+console.log('enableMultiTab', 55)
+
+const tableHeight = computed(() => {
+  console.log(fullScreen)
+  if (fullScreen) {
+    return windowHeight.value
+  } else {
+    return 500
+  }
+})
+
+const tableScroll = ref({
+  y: tableHeight.value
+})
 </script>
 <style lang="less" scoped>
 @import '@/less/var.less';

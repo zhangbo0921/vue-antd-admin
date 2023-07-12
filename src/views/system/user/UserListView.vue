@@ -3,7 +3,7 @@
     <TableList :columns="columns" :api="getUserList" rowKey="uid">
       <template #bodyCell="{ text, record, column }">
         <template v-if="column.dataIndex === 'status'">
-          <template v-if="record.status === 1"> <a-tag color="#2db7f5">启用</a-tag></template>
+          <template v-if="record.status == 1"> <a-tag color="#2db7f5">启用</a-tag></template>
           <template v-else><a-tag color="#f50">禁用</a-tag></template>
         </template>
       </template>
@@ -22,16 +22,19 @@ const columns = [
     align: 'center'
   },
   {
-    title: '账号',
-    dataIndex: 'account',
-    sorter: false,
-    width: 150
-  },
-  {
     title: '姓名',
     dataIndex: 'name',
     sorter: false,
     width: 150
+  },
+  {
+    title: '账号',
+    dataIndex: 'account',
+    width: 150,
+    sorter: {
+      compare: (a: any, b: any) => a.account - b.account,
+      multiple: 1
+    }
   },
   {
     title: '昵称',
@@ -42,7 +45,10 @@ const columns = [
   {
     title: '状态',
     dataIndex: 'status',
-    sorter: true,
+    sorter: {
+      compare: (a: any, b: any) => a.status - b.status,
+      multiple: 1
+    },
     width: 150
   }
 ]

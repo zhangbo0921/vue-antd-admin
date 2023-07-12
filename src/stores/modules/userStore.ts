@@ -69,13 +69,11 @@ export const userStore = defineStore('userStore', {
     },
     getUserInfo() {
       this.userInfo = jwtDecode(store.get(Constants.AccessToken)) as UserInfo
-      console.debug(this.userInfo)
       if (!this.userInfo.homePath) {
         this.userInfo.homePath = settings.homePath
       }
     },
     async getMenu() {
-      console.debug('localRoutes:', settings.localRoutes)
       if (settings.localRoutes) {
         this.menus = [...baseRoutes, ...syncRoute]
         this.addRoutes = this.filterRoute(syncRoute)
@@ -97,7 +95,6 @@ export const userStore = defineStore('userStore', {
     },
     getAddRoutes() {
       const addRoutes = toRaw(this.addRoutes)
-      console.debug('addRoute', addRoutes)
       return addRoutes
     },
     setRoutesLoadSuccess(flag: boolean) {
