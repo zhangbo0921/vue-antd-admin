@@ -1,6 +1,54 @@
 <template>
   <div class="table-page">
-    <div v-if="showSearch" class="search">search</div>
+    <div v-if="showSearch" class="search" ref="el">
+      <div class="search-form">
+        <a-form labelAlign="right" :labelCol="{ span: 5 }">
+          <a-row>
+            <a-col :span="24" :class="{ close: zhedie }">
+              <slot name="search"></slot>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
+    </div>
+    <div
+      class="toolbar"
+      :style="
+        !showSearch
+          ? {
+              marginTop: 0
+            }
+          : {}
+      "
+    >
+      <div class="left">
+        <a-space>
+          <slot name="toolbar"></slot>
+        </a-space>
+      </div>
+      <div class="right">
+        <a-space>
+          <div class="search-buttons" v-if="showSearch">
+            <a-space>
+              <a-button type="primary" size="small">查询</a-button>
+              <a-button size="small">清空</a-button>
+              <a-button
+                size="small"
+                @click="() => (zhedie = !zhedie)"
+                v-if="slots.search && slots.search().length > 1"
+                >{{ zhedie ? '展开' : '收起' }}</a-button
+              >
+            </a-space>
+          </div>
+          <a-divider type="vertical" v-if="showToolBar" />
+          <a-button size="small">
+            <template #icon>
+              <Icon icon="setting-outlined"></Icon>
+            </template>
+          </a-button>
+        </a-space>
+      </div>
+    </div>
     <div class="list">
       <a-table
         :columns="realColumn"
@@ -26,15 +74,15 @@
 </template>
 <script setup lang="ts">
 import { useAppStore } from '@/stores'
-import { tryOnMounted, useThrottleFn, useWindowSize } from '@vueuse/core'
-import { computed, ref, watch, watchEffect } from 'vue'
+import { tryOnMounted, useThrottleFn, useWindowSize, useResizeObserver } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
+import { computed, ref, useSlots, watchEffect } from 'vue'
 
 interface TableProps {
   api: (params?: any) => Promise<any>
+  title?: string
   // 列配置
   columns: any[]
-  // 是否显示搜索表单
-  showSearch?: any
   // 搜索参数
   searchParams?: any
   // 是否开启分页
@@ -53,6 +101,7 @@ interface TableProps {
  * 定义porps
  */
 const props = withDefaults(defineProps<TableProps>(), {
+  title: '',
   pagination: true,
   throttle: true,
   throttleSeconds: 1000,
@@ -60,12 +109,36 @@ const props = withDefaults(defineProps<TableProps>(), {
   searchParams: {},
   showOptColumn: true
 })
+/**
+ * 钩子函数
+ */
+const appStore = useAppStore()
+
+// 内部变量
 
 const dataSource = ref([])
+const zhedie = ref(true)
 const tableConfig = ref({
   loading: false
 })
 
+const slots = useSlots()
+
+const showToolBar = computed(() => {
+  if (slots.toolbar && slots.toolbar().length > 0) {
+    return true
+  }
+  return false
+})
+
+const showSearch = computed(() => {
+  if (slots.search && slots.search().length > 0) {
+    return true
+  }
+  return false
+})
+
+// 初始化
 tryOnMounted(() => {
   getTableList()
 })
@@ -73,14 +146,15 @@ tryOnMounted(() => {
 // 分页
 const paginationConfig = ref({
   current: 1,
-  pageSize: 15,
+  pageSize: 30,
   total: 0,
-  pageSizeOptions: ['15', '30', '50', '100', '200'],
+  pageSizeOptions: ['30', '50', '100', '200'],
   showSizeChanger: true,
   showTotal: (total: number) => {
     return '共 ' + total + ' 条数据'
   }
 })
+// 分页参数
 const pageParam = computed(() => {
   return props.searchParams
     ? {
@@ -146,29 +220,70 @@ const getTableListThrottle = useThrottleFn(getTableList, props.throttle ? props.
 
 // 表格高度
 const { height: windowHeight } = useWindowSize()
-const { headerHeight, fullScreen } = useAppStore()
-console.log('windowHeight', windowHeight.value)
-console.log('headerHeight', headerHeight)
-console.log('enableMultiTab', 55)
-
-const tableHeight = computed(() => {
-  console.log(fullScreen)
-  if (fullScreen) {
-    return windowHeight.value
-  } else {
-    return 500
-  }
-})
+const { headerHeight, fullScreen, enableMultiTab } = storeToRefs(appStore)
 
 const tableScroll = ref({
-  y: tableHeight.value
+  y: 0
+})
+// 计算搜索区域高度
+const searchElHeight = ref(0)
+const el = ref()
+tryOnMounted(() => {
+  useResizeObserver(el, (entries) => {
+    const entry = entries[0]
+    const { height } = entry.contentRect
+    searchElHeight.value = height
+  })
+})
+watchEffect(() => {
+  if (fullScreen?.value) {
+    tableScroll.value.y = windowHeight.value - 112
+  } else {
+    tableScroll.value.y =
+      windowHeight.value -
+      112 -
+      (headerHeight?.value as number) -
+      (enableMultiTab?.value ? 53 : 0) -
+      (showSearch.value ? searchElHeight.value + 12 : 42) -
+      (showToolBar.value ? 42 : 0)
+  }
 })
 </script>
-<style lang="less" scoped>
+<style lang="less">
 @import '@/less/var.less';
 .table-page {
   padding: 4px;
-  background: #fff;
   height: 100%;
+  & > div {
+    background: #fff;
+  }
+  .search {
+    padding: 4px;
+    margin-top: 0px;
+    .search-form {
+      .ant-form-item {
+        margin: 4px 0;
+      }
+      .close {
+        .ant-row:nth-child(n + 2) {
+          display: none;
+        }
+      }
+    }
+  }
+  .toolbar {
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0 0 0;
+    border: 1px solid #f0f0f0;
+    border-bottom: 0;
+    .left {
+      display: flex;
+    }
+    .right {
+      display: flex;
+    }
+  }
 }
 </style>

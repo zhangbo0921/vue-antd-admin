@@ -240,7 +240,7 @@ const tabStore = useTabStore()
 const appStore = useAppStore()
 
 // 内容全屏
-const isContentFullscreen = ref(false)
+const { fullScreen: isContentFullscreen } = storeToRefs(appStore)
 
 const title = ref(appStore.title as string)
 const logoPath = ref(appStore.logo)
