@@ -2,7 +2,7 @@
   <div class="table-page">
     <div v-if="showSearch" class="search" ref="el">
       <div class="search-form">
-        <a-form labelAlign="right" :labelCol="{ span: 5 }">
+        <a-form labelAlign="right" :labelCol="{ span: 5 }" ref="searchForm">
           <a-row>
             <a-col :span="24" :class="{ close: zhedie }">
               <slot name="search"></slot>
@@ -30,8 +30,8 @@
         <a-space>
           <div class="search-buttons" v-if="showSearch">
             <a-space>
-              <a-button type="primary" size="small">查询</a-button>
-              <a-button size="small">清空</a-button>
+              <a-button type="primary" size="small" @click="getTableListThrottle"> 查询 </a-button>
+              <a-button size="small" @click="clearSearchForm">清空</a-button>
               <a-button
                 size="small"
                 @click="() => (zhedie = !zhedie)"
@@ -77,6 +77,7 @@ import { useAppStore } from '@/stores'
 import { tryOnMounted, useThrottleFn, useWindowSize, useResizeObserver } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
 import { computed, ref, useSlots, watchEffect } from 'vue'
+import { Form } from 'ant-design-vue'
 
 interface TableProps {
   api: (params?: any) => Promise<any>
@@ -85,6 +86,8 @@ interface TableProps {
   columns: any[]
   // 搜索参数
   searchParams?: any
+  // 搜索前执行，一般用于参数调整
+  handleSearchParams?: () => any
   // 是否开启分页
   pagination?: boolean
   // 是否节流
@@ -106,7 +109,6 @@ const props = withDefaults(defineProps<TableProps>(), {
   throttle: true,
   throttleSeconds: 1000,
   isTree: false,
-  searchParams: {},
   showOptColumn: true
 })
 /**
@@ -143,12 +145,14 @@ tryOnMounted(() => {
   getTableList()
 })
 
-// 分页
+/**
+ * 分页
+ */
 const paginationConfig = ref({
   current: 1,
-  pageSize: 30,
+  pageSize: 20,
   total: 0,
-  pageSizeOptions: ['30', '50', '100', '200'],
+  pageSizeOptions: ['20', '50', '100', '200'],
   showSizeChanger: true,
   showTotal: (total: number) => {
     return '共 ' + total + ' 条数据'
@@ -156,7 +160,7 @@ const paginationConfig = ref({
 })
 // 分页参数
 const pageParam = computed(() => {
-  return props.searchParams
+  return props.pagination
     ? {
         pageNum: paginationConfig.value.current,
         pageSize: paginationConfig.value.pageSize
@@ -170,11 +174,19 @@ const handleChange = (pagination: any) => {
   getTableList()
 }
 
+const getSearchParams = () => {
+  if (props.handleSearchParams) {
+    return props.handleSearchParams()
+  } else {
+    return props.searchParams
+  }
+}
+
 // 获取数据
 const getTableList = async () => {
   tableConfig.value.loading = true
   try {
-    const res = await props.api({ ...props.searchParams, ...pageParam.value })
+    const res = await props.api({ ...getSearchParams(), ...pageParam.value })
     dataSource.value = res.data.list
     if (props.pagination) {
       paginationConfig.value.total = res.data.total
@@ -218,7 +230,20 @@ const rowSelection = { fixed: true, selectedRowKeys, onChange }
  */
 const getTableListThrottle = useThrottleFn(getTableList, props.throttle ? props.throttleSeconds : 0)
 
-// 表格高度
+/**
+ * searchForm 处理
+ */
+const useForm = Form.useForm
+
+const { resetFields } = useForm(props.searchParams)
+
+const clearSearchForm = () => {
+  resetFields()
+}
+
+/**
+ * 表格高度
+ */
 const { height: windowHeight } = useWindowSize()
 const { headerHeight, fullScreen, enableMultiTab } = storeToRefs(appStore)
 
@@ -258,7 +283,7 @@ watchEffect(() => {
     background: #fff;
   }
   .search {
-    padding: 4px;
+    padding: 4px 8px;
     margin-top: 0px;
     .search-form {
       .ant-form-item {

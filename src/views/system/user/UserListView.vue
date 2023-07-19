@@ -1,56 +1,57 @@
 <template>
   <div class="user-list">
-    <TableList :columns="columns" :api="getUserList" rowKey="uid" :title="'用户列表'">
+    <TableList
+      :columns="columns"
+      :api="getUserList"
+      rowKey="uid"
+      :title="'用户列表'"
+      :search-params="formData"
+      :handleSearchParams="handleSearchParams"
+    >
       <template #search>
         <a-row :gutter="24">
           <a-col :span="6">
             <a-form-item>
               <a-range-picker
-                v-model:value="formData.rangeDate"
+                v-model:value="formData.createTime"
+                show-time
                 style="width: 100%"
                 :placeholder="['开始登记时间', '截止登记时间']"
+                :format="'YYYY-MM-DD HH:mm:ss'"
+                valueFormat="YYYY-MM-DD HH:mm:ss"
               />
             </a-form-item>
           </a-col>
           <a-col :span="6">
             <a-form-item>
-              <a-input v-model:value="formData.username" placeholder="工单编号" />
+              <a-input v-model:value="formData.orderNo" placeholder="工单编号" />
             </a-form-item>
           </a-col>
           <a-col :span="6">
             <a-form-item>
-              <a-input v-model:value="formData.username" placeholder="来电号码" />
+              <a-input v-model:value="formData.tel" placeholder="来电号码" />
             </a-form-item>
           </a-col>
           <a-col :span="6">
             <a-form-item>
-              <a-input v-model:value="formData.username" placeholder="汇聚编号" />
+              <a-input v-model:value="formData.hjNo" placeholder="汇聚编号" />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row :gutter="24">
           <a-col :span="6">
             <a-form-item>
-              <a-range-picker
-                v-model:value="formData.rangeDate"
-                style="width: 100%"
-                :placeholder="['开始登记时间', '截止登记时间']"
-              />
+              <a-input v-model:value="formData.username" placeholder="群众姓名" />
             </a-form-item>
           </a-col>
           <a-col :span="6">
             <a-form-item>
-              <a-input v-model:value="formData.username" placeholder="工单编号" />
+              <a-input v-model:value="formData.content" placeholder="工单内容" />
             </a-form-item>
           </a-col>
           <a-col :span="6">
             <a-form-item>
-              <a-input v-model:value="formData.username" placeholder="来电号码" />
-            </a-form-item>
-          </a-col>
-          <a-col :span="6">
-            <a-form-item>
-              <a-input v-model:value="formData.username" placeholder="汇聚编号" />
+              <a-input v-model:value="formData.status" placeholder="工单状态" />
             </a-form-item>
           </a-col>
         </a-row>
@@ -73,6 +74,7 @@
 <script setup lang="ts">
 import { getUserList } from '@/api/system/user'
 import TableList from '@/components/table/TableList.vue'
+import { useArrayJoin } from '@vueuse/core'
 import { ref } from 'vue'
 
 const columns = [
@@ -115,21 +117,23 @@ const columns = [
 ]
 
 const formData = ref({
-  username: '',
-  type: [],
-  date: '',
-  rangeDate: [],
-  rangeDate1: []
+  orderNo: null,
+  tel: null,
+  hjNo: null,
+  createTime: [],
+  username: null,
+  content: null,
+  status: null
 })
 
-const listData = [
-  {
-    value: 'jack',
-    label: 'Jack (100)'
-  },
-  {
-    value: 'lilei',
-    label: 'lilei (200)'
-  }
-]
+const handleSearchParams = () => {
+  // 提出createTime 和 其他参数到 searchParams
+  const { createTime, ...searchParams } = formData.value
+  // 解构搜索参数 searchParams
+  const params: any = { ...searchParams }
+  // 设置
+  params.startTime = createTime[0]
+  params.endTime = createTime[1]
+  return params
+}
 </script>

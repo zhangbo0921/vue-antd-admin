@@ -4,8 +4,17 @@ import { setupRouter, router } from './router'
 import { setupStore } from './stores'
 import { initRouteGuard } from './router/guard'
 import { setupIcons } from '@/components/icon'
-import * as dayjs from 'dayjs'
+
+/**
+ * 设置dayjs
+ */
+import dayjs from 'dayjs'
+import updateLocale from 'dayjs/plugin/updateLocale'
 import 'dayjs/locale/zh-cn'
+dayjs.extend(updateLocale)
+dayjs.updateLocale('zh-cn', {
+  weekStart: 0
+})
 
 const app = createApp(App)
 
