@@ -237,7 +237,7 @@ tryOnMounted(() => {
 })
 watchEffect(() => {
   if (fullScreen?.value) {
-    tableScroll.value.y = windowHeight.value - 112
+    tableScroll.value.y = windowHeight.value - 112 - 42
   } else {
     tableScroll.value.y =
       windowHeight.value -
