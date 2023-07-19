@@ -62,7 +62,7 @@
         <a-button size="small">修改</a-button>
         <a-button danger size="small">删除</a-button>
       </template>
-      <template #bodyCell="{ text, record, column }">
+      <template #bodyCell="{ record, column }">
         <template v-if="column.dataIndex === 'status'">
           <template v-if="record.status == 1"> <a-tag color="#2db7f5">启用</a-tag></template>
           <template v-else><a-tag color="#f50">禁用</a-tag></template>
@@ -74,7 +74,6 @@
 <script setup lang="ts">
 import { getUserList } from '@/api/system/user'
 import TableList from '@/components/table/TableList.vue'
-import { useArrayJoin } from '@vueuse/core'
 import { ref } from 'vue'
 
 const columns = [

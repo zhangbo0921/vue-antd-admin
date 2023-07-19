@@ -3,7 +3,7 @@ import axios from 'axios'
 import store from 'store2'
 import { message } from 'ant-design-vue'
 import { useUserStore } from '@/stores'
-import { useRouter } from 'vue-router'
+import { router } from '@/router/index'
 
 const http = axios.create({
   timeout: 60000,
@@ -40,7 +40,7 @@ http.interceptors.response.use(
     if (code === 401) {
       const userStore = useUserStore()
       userStore.clearAll()
-      const { replace } = useRouter()
+      const { replace } = router
       replace({ path: '/auth/login' })
       return Promise.reject(msg)
     }

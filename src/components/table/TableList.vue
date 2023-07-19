@@ -40,12 +40,6 @@
               >
             </a-space>
           </div>
-          <a-divider type="vertical" v-if="showToolBar" />
-          <a-button size="small">
-            <template #icon>
-              <Icon icon="setting-outlined"></Icon>
-            </template>
-          </a-button>
         </a-space>
       </div>
     </div>
