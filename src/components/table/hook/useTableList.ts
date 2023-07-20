@@ -1,11 +1,6 @@
-import { tryOnMounted, tryOnUnmounted } from '@vueuse/core'
+import { tryOnUnmounted } from '@vueuse/core'
 import { ref, unref } from 'vue'
-
-export interface TableListAction {
-  reload: () => void
-  resetFields: () => void
-  getSelectedRowKeys: () => []
-}
+import type { TableListAction } from '../types'
 
 export const useTableList = (): TableListAction & {
   register: (instance: TableListAction) => void

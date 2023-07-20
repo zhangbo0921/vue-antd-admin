@@ -1,18 +1,39 @@
-import type { MenuInfo, R } from '@/types/types'
+import type { R } from '@/types/types'
 import http from '@/utils/http/request'
-import type { LoginParams, Token } from '../model/system'
+
+export interface MenuInfo {
+  hideMenu: number
+  mid: number
+  pid: number
+  updateTime: string
+  sort: number
+  hideChildren: number
+  ignoreRoute: number
+  type: number
+  path: string
+  component: string
+  createBy: number
+  createTime: string
+  updateBy: number
+  enName: string
+  name: string
+  perms: string
+  pids: string
+  status: number
+  children: MenuInfo[]
+}
 
 enum Api {
-  Login = '/api/auth/auth/login',
-  Logout = '/api/auth/auth/logout',
-  GetRoutes = '/api/system/auth/getRoutes'
+  MenuList = '/api/system/menu/list',
+  MenuTree = '/api/system/menu/tree'
 }
 
-// 登录
-export const login = (data: LoginParams): Promise<R<Token>> => {
-  return http.post<any, R<Token>>(Api.Login, data)
+// 菜单列表
+export const getMenuList = (params?: any): Promise<R<MenuInfo[]>> => {
+  return http.get<any, R<MenuInfo[]>>(Api.MenuList, { params })
 }
 
-export const getMenus = (): Promise<R<MenuInfo[]>> => {
-  return http.post<any, R<MenuInfo[]>>(Api.GetRoutes)
+// 菜单树
+export const getMenuTree = (params?: any): Promise<R<MenuInfo[]>> => {
+  return http.get<any, R<MenuInfo[]>>(Api.MenuTree, { params })
 }

@@ -5,9 +5,10 @@
       :api="getUserList"
       @register="register"
       rowKey="uid"
-      :title="'用户列表'"
       :search-params="formData"
       :handleSearchParams="handleSearchParams"
+      :showIndex="true"
+      :showCheckedBox="false"
     >
       <template #search>
         <a-row :gutter="24">
@@ -81,12 +82,6 @@ import useTableList from '@/components/table/hook/useTableList'
 const { register, reload, resetFields, getSelectedRowKeys } = useTableList()
 
 const columns = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    width: 50,
-    align: 'center'
-  },
   {
     title: '姓名',
     dataIndex: 'name',

@@ -41,11 +41,12 @@
         v-bind="$attrs"
         size="small"
         bordered
-        :rowSelection="rowSelection"
-        :pagination="pagination ? paginationConfig : false"
+        :rowSelection="showCheckedBox ? rowSelection : null"
+        :pagination="pagination && mode !== 'tree' ? paginationConfig : false"
         :loading="tableConfig.loading"
         :scroll="tableScroll"
         @change="handleChange"
+        :defaultExpandAllRows="true"
         :row-class-name="(_record:any, index:number) => (striped?(index % 2 === 1 ? 'table-striped' : null):null)"
       >
         <template #bodyCell="{ text, record, index, column }">
@@ -64,10 +65,14 @@ import { tryOnMounted, useThrottleFn, useWindowSize, useResizeObserver } from '@
 import { storeToRefs } from 'pinia'
 import { computed, ref, useSlots, watchEffect, type Ref } from 'vue'
 import { Form } from 'ant-design-vue'
-import type { TableListAction } from './hook/useTableList'
+import type { TableListAction } from './types'
 
 interface TableProps {
+  // 模式
+  mode?: 'list' | 'tree' | 'treeList'
+  // 接口
   api: (params?: any) => Promise<any>
+  // 标题
   title?: string
   // 列配置
   columns: any[]
@@ -86,7 +91,11 @@ interface TableProps {
   // 操作列宽度
   optWidth?: string | number
   // 斑马线
-  striped: boolean
+  striped?: boolean
+  // 是否显示序号
+  showIndex?: boolean
+  // 显示选中
+  showCheckedBox?: boolean
 }
 
 const emit = defineEmits(['register'])
@@ -95,13 +104,16 @@ const emit = defineEmits(['register'])
  * 定义porps
  */
 const props = withDefaults(defineProps<TableProps>(), {
+  mode: 'list',
   title: '',
   pagination: true,
   throttle: true,
   throttleSeconds: 1000,
   isTree: false,
   showOptColumn: true,
-  striped: true
+  striped: true,
+  showIndex: true,
+  showCheckedBox: true
 })
 /**
  * 钩子函数
@@ -183,7 +195,12 @@ const getTableList = async () => {
   tableConfig.value.loading = true
   try {
     const res = await props.api({ ...getSearchParams(), ...pageParam.value })
-    dataSource.value = res.data.list
+    if (props.mode === 'list') {
+      dataSource.value = res.data.list
+    }
+    if (props.mode === 'tree') {
+      dataSource.value = res.data
+    }
     if (props.pagination) {
       paginationConfig.value.total = res.data.total
     }
@@ -195,6 +212,20 @@ const getTableList = async () => {
 // 最终columns计算结果
 const realColumn = computed(() => {
   if (props.columns.length > 0) {
+    if (props.showIndex) {
+      const optColumn = {
+        title: '序号',
+        dataIndex: 'index',
+        width: 50,
+        align: 'center'
+      }
+      const optIndex = props.columns.findIndex((item) => item.dataIndex === optColumn.dataIndex)
+      if (optIndex > -1) {
+        props.columns.splice(optIndex, 1, optColumn)
+      } else {
+        props.columns.unshift(optColumn)
+      }
+    }
     if (props.showOptColumn) {
       const optColumn = {
         title: '操作',
@@ -332,6 +363,10 @@ emit('register', tableListAction)
     .right {
       display: flex;
     }
+  }
+  .ant-table-cell .ant-btn-link {
+    height: 22px;
+    padding: 0 4px;
   }
 }
 </style>
