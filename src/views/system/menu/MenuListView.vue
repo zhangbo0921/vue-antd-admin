@@ -1,6 +1,6 @@
 <template>
   <div class="menu-list">
-    <TableList :columns="columns" :api="getUserList" size="middle" bordered></TableList>
+    <TableList :columns="columns" :api="getUserList" size="middle" bordered> </TableList>
   </div>
 </template>
 <script setup lang="ts">

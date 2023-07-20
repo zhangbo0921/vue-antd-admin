@@ -11,16 +11,7 @@
         </a-form>
       </div>
     </div>
-    <div
-      class="toolbar"
-      :style="
-        !showSearch
-          ? {
-              marginTop: 0
-            }
-          : {}
-      "
-    >
+    <div class="toolbar" v-if="showToolBar">
       <div class="left">
         <a-space>
           <slot name="toolbar"></slot>
@@ -70,8 +61,9 @@
 import { useAppStore } from '@/stores'
 import { tryOnMounted, useThrottleFn, useWindowSize, useResizeObserver } from '@vueuse/core'
 import { storeToRefs } from 'pinia'
-import { computed, ref, useSlots, watchEffect } from 'vue'
+import { computed, ref, useSlots, watchEffect, type Ref } from 'vue'
 import { Form } from 'ant-design-vue'
+import type { TableListAction } from './hook/useTableList'
 
 interface TableProps {
   api: (params?: any) => Promise<any>
@@ -93,6 +85,8 @@ interface TableProps {
   // 操作列宽度
   optWidth?: string | number
 }
+
+const emit = defineEmits(['register'])
 
 /**
  * 定义porps
@@ -123,6 +117,10 @@ const slots = useSlots()
 const showToolBar = computed(() => {
   if (slots.toolbar && slots.toolbar().length > 0) {
     return true
+  } else {
+    if (showSearch.value) {
+      return true
+    }
   }
   return false
 })
@@ -219,6 +217,10 @@ const onChange = (keys: []) => {
 }
 const rowSelection = { fixed: true, selectedRowKeys, onChange }
 
+const getSelectedRowKeys = (): [] => {
+  return selectedRowKeys.value as []
+}
+
 /**
  * 抖动
  */
@@ -227,12 +229,21 @@ const getTableListThrottle = useThrottleFn(getTableList, props.throttle ? props.
 /**
  * searchForm 处理
  */
-const useForm = Form.useForm
-
-const { resetFields } = useForm(props.searchParams)
+let clear: any = null
+if (showSearch.value) {
+  if (props.searchParams) {
+    const useForm = Form.useForm
+    const { resetFields } = useForm(props.searchParams)
+    clear = resetFields
+  } else {
+    console.warn('请配置搜索参数：searchParams')
+  }
+}
 
 const clearSearchForm = () => {
-  resetFields()
+  if (clear) {
+    clear()
+  }
 }
 
 /**
@@ -263,10 +274,18 @@ watchEffect(() => {
       112 -
       (headerHeight?.value as number) -
       (enableMultiTab?.value ? 53 : 0) -
-      (showSearch.value ? searchElHeight.value + 12 : 42) -
-      (showToolBar.value ? 42 : 0)
+      (showSearch.value ? searchElHeight.value + 12 : 0) -
+      (showToolBar.value ? 43 : 0)
   }
 })
+
+// useTable 后，返回暴露api
+const tableListAction: TableListAction = {
+  reload: getTableListThrottle,
+  resetFields: clear,
+  getSelectedRowKeys: getSelectedRowKeys
+}
+emit('register', tableListAction)
 </script>
 <style lang="less">
 @import '@/less/var.less';

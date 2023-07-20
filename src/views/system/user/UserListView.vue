@@ -3,6 +3,7 @@
     <TableList
       :columns="columns"
       :api="getUserList"
+      @register="register"
       rowKey="uid"
       :title="'用户列表'"
       :search-params="formData"
@@ -57,7 +58,7 @@
         </a-row>
       </template>
       <template #toolbar>
-        <a-button type="primary" size="small">添加</a-button>
+        <a-button type="primary" size="small" @click="testReload">添加</a-button>
         <a-button size="small">授权</a-button>
         <a-button size="small">修改</a-button>
         <a-button danger size="small">删除</a-button>
@@ -75,6 +76,9 @@
 import { getUserList } from '@/api/system/user'
 import TableList from '@/components/table/TableList.vue'
 import { ref } from 'vue'
+import useTableList from '@/components/table/hook/useTableList'
+
+const { register, reload, resetFields, getSelectedRowKeys } = useTableList()
 
 const columns = [
   {
@@ -134,5 +138,9 @@ const handleSearchParams = () => {
   params.startTime = createTime[0]
   params.endTime = createTime[1]
   return params
+}
+
+const testReload = () => {
+  console.log(getSelectedRowKeys())
 }
 </script>
