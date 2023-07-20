@@ -140,7 +140,8 @@ const handleSearchParams = () => {
   return params
 }
 
+// tableList 接口测试
 const testReload = () => {
-  console.log(getSelectedRowKeys())
+  console.log(reload())
 }
 </script>

@@ -46,6 +46,7 @@
         :loading="tableConfig.loading"
         :scroll="tableScroll"
         @change="handleChange"
+        :row-class-name="(_record:any, index:number) => (striped?(index % 2 === 1 ? 'table-striped' : null):null)"
       >
         <template #bodyCell="{ text, record, index, column }">
           <template v-if="column.dataIndex === 'index'">
@@ -84,6 +85,8 @@ interface TableProps {
   showOptColumn?: boolean
   // 操作列宽度
   optWidth?: string | number
+  // 斑马线
+  striped: boolean
 }
 
 const emit = defineEmits(['register'])
@@ -97,7 +100,8 @@ const props = withDefaults(defineProps<TableProps>(), {
   throttle: true,
   throttleSeconds: 1000,
   isTree: false,
-  showOptColumn: true
+  showOptColumn: true,
+  striped: true
 })
 /**
  * 钩子函数
@@ -287,6 +291,12 @@ const tableListAction: TableListAction = {
 }
 emit('register', tableListAction)
 </script>
+
+<style lang="less" scoped>
+:deep(.table-striped) td {
+  background-color: #fafafa;
+}
+</style>
 <style lang="less">
 @import '@/less/var.less';
 .table-page {
